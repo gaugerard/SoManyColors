@@ -17,7 +17,9 @@ def PDF2jpg(pdf_file, jpg_file, ImageMagickConvert_file = 'D:\ProgrammePDF\Image
     :param ImageMagickConvert_file: the directory where ImageMagick\convert is located
     """
 
-    call(ImageMagickConvert_file + ' ' + pdf_file + ' ' + jpg_file + '\image.png')
+    # -density 300 = will set the dpi to 300
+    # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
+    call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
 
 
 def change_color(png_file, image, R_value, G_value, B_value):

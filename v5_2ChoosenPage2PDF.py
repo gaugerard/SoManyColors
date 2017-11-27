@@ -17,7 +17,9 @@ def PDF2jpg(pdf_file, jpg_file, ImageMagickConvert_file = 'D:\ProgrammePDF\Image
     :param ImageMagickConvert_file: the directory where ImageMagick\convert is located
     """
 
-    call(ImageMagickConvert_file + ' ' + pdf_file + ' ' + jpg_file + '\image.png')
+    # -density 300 = will set the dpi to 300
+    # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
+    call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
 
 
 def change_color(png_file, image, R_value, G_value, B_value):
@@ -259,6 +261,7 @@ def main(pdf_file, png_file, page, color_blind_filter):
     movePDF(pdf_file)  # <-------------------------------------------------------------
 
 
-# main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 3, (30, 10, 80))
-#main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', 'D:\PDF_File\imagesPDF', (10, 25, 80))
+main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 3, (30, 10, 80))
+# ain('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', 'D:\PDF_File\imagesPDF', (10, 25, 80))
 
+# main('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF', 3, (30, 10, 80))
