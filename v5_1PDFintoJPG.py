@@ -11,6 +11,7 @@ import time
 #import thread
 import math
 
+
 def PDF2jpg(pdf_file, jpg_file, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
     Converts each page of a PDF into png and saves them in jpg_file directory
@@ -22,6 +23,7 @@ def PDF2jpg(pdf_file, jpg_file, ImageMagickConvert_file = 'D:\ProgrammePDF\Image
     # -density 300 = will set the dpi to 300
     # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
     call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
+    #call(ImageMagickConvert_file + ' ' + pdf_file + ' ' + jpg_file + '\image.png')
 
 
 def change_color(png_file, image, R_value, G_value, B_value):
@@ -97,12 +99,12 @@ def mergePDF(pdf_file, png_file, dico_im_pdf):
     :param merger: an object merger that allows the merging of PDF pages
     :param dico_im_pdf: a dictionary which contains all the name of the PDFs that needs to be merged
     """
-
     pdf_m_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # exe : PDF_delta.pdf --> PDF_delta_m.pdf
     merger = PdfFileMerger()
 
     for num in range(dico_im_pdf['nbr_pages']):
         if (dico_im_pdf[num] in os.listdir(png_file)) and ((dico_im_pdf[num]).endswith('.pdf')):
+
                 merger.append(png_file + '\\' + dico_im_pdf[num])
                 # os.remove(png_file + '\\' + dico_im_pdf[num])  cant remove the pdf :/ ...
                 del dico_im_pdf[num]
@@ -135,14 +137,16 @@ def movePDF(pdf_file):
     """
     pdf_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # ( exe : PDF_delta.pdf --> PDF_delta_m.pdf )
     current_dir = os.getcwd() + '\\' + pdf_name  # ( exe : current directory of the PDF_delta_m.pdf )
-    final_dir = pdf_file.replace('PDF_delta.pdf', pdf_name)  # ( exe : directory of PDF_delta.pdf )
+    final_dir = pdf_file.replace('.pdf', '_m.pdf')  # ( exe : directory of PDF_delta.pdf )
+
+    print 'Created PDF src path : ', current_dir
+    print 'PDF destination path : ', final_dir
 
     pathexists(current_dir)
 
     os.rename(current_dir, final_dir)
 
-    print 'PDF destination path : ', final_dir
-
+    pathexists(final_dir)
     # print 'END DIRECTORY = ', final_dir
 
 
@@ -188,19 +192,6 @@ def colorfilterok(colorfilter):
     return True
 
 
-def open_eps(filename, dpi=300.0):
-    img = Image.open(filename)
-    original = [float(d) for d in img.size]
-    # scale = width / original[0] # calculated wrong height
-    scale = dpi/72.0            # this fixed it
-    if dpi is not 0:
-        img.load(scale = math.ceil(scale))
-    if scale != 1:
-        img.thumbnail([round(scale * d) for d in original], Image.ANTIALIAS)
-    return img
-
-
-
 def main(pdf_file, color_blind_filter, png_file='D:\PDF_File\imagesPDF'):
     """
     |----------------------------------------------------------------------|
@@ -218,6 +209,7 @@ def main(pdf_file, color_blind_filter, png_file='D:\PDF_File\imagesPDF'):
     |/!\ - This version is radically different from the version 5 !!!  /!\ |
     |----------------------------------------------------------------------|
     """
+    t1 = time.time()
     colorfilterok(color_blind_filter)
     pathexists(pdf_file)
     pathexists(png_file)
@@ -274,10 +266,15 @@ def main(pdf_file, color_blind_filter, png_file='D:\PDF_File\imagesPDF'):
     # MERGES THE PDF
     mergePDF(pdf_file, png_file, dico_im_pdf)
 
+    t2 = time.time()
+
+    print ('Time taken to process the PDF : ', t2 - t1)
+
     # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
     movePDF(pdf_file)  # <-------------------------------------------------------------
 
 
 # main('D:\PDF_File\intro_prog_01_introduction_slides.pdf', (0, 90, 0), 'D:\PDF_File\imagesPDF')
 # main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', (10, 25, 80), 'D:\PDF_File\imagesPDF')
-main('D:\PDF_File\PDF_delta.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
+# main('D:\PDF_File\PDF_delta.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
+# main('D:\PDF_File\PDF_echo.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')

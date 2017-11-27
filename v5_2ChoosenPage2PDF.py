@@ -133,15 +133,16 @@ def movePDF(pdf_file):
     """
     pdf_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # ( exe : PDF_delta.pdf --> PDF_delta_m.pdf )
     current_dir = os.getcwd() + '\\' + pdf_name  # ( exe : current directory of the PDF_delta_m.pdf )
-    final_dir = pdf_file.replace('PDF_delta.pdf', pdf_name)  # ( exe : directory of PDF_delta.pdf )
+    final_dir = pdf_file.replace('.pdf', '_m.pdf')  # ( exe : directory of PDF_delta.pdf )
+
+    print 'Created PDF src path : ', current_dir
+    print 'PDF destination path : ', final_dir
 
     pathexists(current_dir)
 
     os.rename(current_dir, final_dir)
 
-    print 'PDF destination path : ', final_dir
-
-    # print 'END DIRECTORY = ', final_dir
+    pathexists(final_dir)
 
 
 def setup(pdf_file, png_file):
@@ -261,7 +262,7 @@ def main(pdf_file, png_file, page, color_blind_filter):
     movePDF(pdf_file)  # <-------------------------------------------------------------
 
 
-main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 3, (30, 10, 80))
+# main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 3, (30, 10, 80))
 # ain('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', 'D:\PDF_File\imagesPDF', (10, 25, 80))
 
 # main('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF', 3, (30, 10, 80))
