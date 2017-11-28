@@ -9,7 +9,7 @@ import sys
 import time
 
 
-def PDF2jpg(pdf_file, jpg_file, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
+def PDF2jpg(pdf_file, jpg_file, page, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
     Converts each page of a PDF into png and saves them in jpg_file directory
     :param pdf_file: the pdf source's directory
@@ -19,7 +19,30 @@ def PDF2jpg(pdf_file, jpg_file, ImageMagickConvert_file = 'D:\ProgrammePDF\Image
 
     # -density 300 = will set the dpi to 300
     # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
-    call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
+    call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + '[' + str(page-1) + ']' + ' -quality 100 ' + jpg_file + '\im-0.png')
+    # call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
+
+    # RENAME THE IMAGE WITH THE CORRECT PAGES THEY REPRESENTS
+    renameImage((page - 1), jpg_file)
+
+
+def renameImage(page, jpg_file):
+    """
+    Renames the produced PNG with the correct name ( its page number )
+    :param pages: int that represents a page of a PDF ( ex : 0 ) where 0 is the first page of the PDF
+    :param jpg_file: the directory where the PNG are stored
+    """
+    name = jpg_file + '\im-0.png'
+    newName = name.replace('im-0', 'image-' + str(page))
+
+    print name
+    print newName
+
+    pathexists(name)
+
+    os.rename(name, newName)
+
+    pathexists(newName)
 
 
 def change_color(png_file, image, R_value, G_value, B_value):
@@ -219,7 +242,7 @@ def main(pdf_file, png_file, page, color_blind_filter):
     print 'Filter to apply : ', color_blind_filter
 
     # CREATES PNG OUT OF A PDF
-    PDF2jpg(pdf_file, png_file)
+    PDF2jpg(pdf_file, png_file, page)
 
     # ---------------------------------------------------------
     # TEST IF IT IS A PNG OR NOT AND THEN CONVERT ITS COLOR
@@ -262,7 +285,6 @@ def main(pdf_file, png_file, page, color_blind_filter):
     movePDF(pdf_file)  # <-------------------------------------------------------------
 
 
-# main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 3, (30, 10, 80))
-# ain('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', 'D:\PDF_File\imagesPDF', (10, 25, 80))
+# main('D:\PDF_File\PDF_echo.pdf', 'D:\PDF_File\imagesPDF', 1, (25, 50, 100))
+# PDF2jpg('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 4)
 
-# main('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF', 3, (30, 10, 80))

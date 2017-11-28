@@ -147,7 +147,6 @@ def movePDF(pdf_file):
     os.rename(current_dir, final_dir)
 
     pathexists(final_dir)
-    # print 'END DIRECTORY = ', final_dir
 
 
 def setup(pdf_file, png_file):
@@ -274,7 +273,8 @@ def main(pdf_file, color_blind_filter, png_file='D:\PDF_File\imagesPDF'):
     movePDF(pdf_file)  # <-------------------------------------------------------------
 
 
-# main('D:\PDF_File\intro_prog_01_introduction_slides.pdf', (0, 90, 0), 'D:\PDF_File\imagesPDF')
+# main('C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\PDFsrc.gitignore\ML_12_clustering_slides_300dpi.pdf', (0, 100, 0), 'C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir.gitignore')
 # main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', (10, 25, 80), 'D:\PDF_File\imagesPDF')
-# main('D:\PDF_File\PDF_delta.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
+# main('D:\PDF_File\intro_prog_01_introduction_slides.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
 # main('D:\PDF_File\PDF_echo.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
+# PDF2jpg('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF')
