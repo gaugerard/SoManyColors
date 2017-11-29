@@ -9,17 +9,19 @@ import sys
 import time
 
 
-def PDF2jpg(pdf_file, jpg_file, page, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
+def PDF2jpg(pdf_file, jpg_file, page, dpi, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
     Converts each page of a PDF into png and saves them in jpg_file directory
     :param pdf_file: the pdf source's directory
     :param jpg_file: the file of destination
     :param ImageMagickConvert_file: the directory where ImageMagick\convert is located
     """
-
+    stringDensity = ' -density ' + str(dpi) + ' '
     # -density 300 = will set the dpi to 300
     # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
-    call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + '[' + str(page-1) + ']' + ' -quality 100 ' + jpg_file + '\im-0.png')
+    print (stringDensity + pdf_file + '[' + str(page-1) + ']' + ' -quality 100 ' + jpg_file + '\im-0.png')
+
+    call(ImageMagickConvert_file + stringDensity + pdf_file + '[' + str(page-1) + ']' + ' -quality 100 ' + jpg_file + '\im-0.png')
     # call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
 
     # RENAME THE IMAGE WITH THE CORRECT PAGES THEY REPRESENTS
@@ -176,6 +178,8 @@ def setup(pdf_file, png_file):
 
     pdf_m_name = path_leaf(pdf_file).replace('.pdf', '_m.pdf')
     pdf_m_path = pdf_file.replace('\\' + path_leaf(pdf_file), '')
+    print pdf_m_name
+    print pdf_m_path
     if pdf_m_name in os.listdir(pdf_m_path):
         os.remove(pdf_m_path + '\\' + pdf_m_name)
 
@@ -208,7 +212,7 @@ def colorfilterok(colorfilter):
     return True
 
 
-def main(pdf_file, png_file, page, color_blind_filter):
+def main(pdf_file, png_file, page, color_blind_filter, dpi):
     """
     |----------------------------------------------------------------------|
     |/!\ - This version is radically different from the version 5 !!!  /!\ |
@@ -242,7 +246,7 @@ def main(pdf_file, png_file, page, color_blind_filter):
     print 'Filter to apply : ', color_blind_filter
 
     # CREATES PNG OUT OF A PDF
-    PDF2jpg(pdf_file, png_file, page)
+    PDF2jpg(pdf_file, png_file, page, dpi)
 
     # ---------------------------------------------------------
     # TEST IF IT IS A PNG OR NOT AND THEN CONVERT ITS COLOR
@@ -286,5 +290,5 @@ def main(pdf_file, png_file, page, color_blind_filter):
 
 
 # main('D:\PDF_File\PDF_echo.pdf', 'D:\PDF_File\imagesPDF', 1, (25, 50, 100))
-# PDF2jpg('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 4)
+# PDF2jpg('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 4, 72)
 

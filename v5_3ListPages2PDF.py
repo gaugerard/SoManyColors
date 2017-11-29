@@ -9,14 +9,14 @@ import sys
 import time
 
 
-def PDF2jpg(pdf_file, jpg_file, list_page, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
+def PDF2jpg(pdf_file, jpg_file, list_page, dpi,  ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
     Converts each page of a PDF into png and saves them in jpg_file directory
     :param pdf_file: the pdf source's directory
     :param jpg_file: the file of destination
     :param ImageMagickConvert_file: the directory where ImageMagick\convert is located
     """
-
+    stringDensity = ' -density ' + str(dpi) + ' '
     # voir list dans convert imageMagick
     pages = []
     for page in list_page:
@@ -25,7 +25,7 @@ def PDF2jpg(pdf_file, jpg_file, list_page, ImageMagickConvert_file = 'D:\Program
     liste = str(pages).replace(' ', '')
     # -density 300 = will set the dpi to 300
     # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
-    call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + liste + ' -quality 100 ' + jpg_file + '\im.png')
+    call(ImageMagickConvert_file + stringDensity + pdf_file + liste + ' -quality 100 ' + jpg_file + '\im.png')
 
     # RENAME THE IMAGE WITH THE CORRECT PAGES THEY REPRESENTS
     renameImage(pages, jpg_file)
@@ -248,7 +248,7 @@ def colorfilterok(colorfilter):
     return True
 
 
-def main(pdf_file, png_file, list_page, color_blind_filter):
+def main(pdf_file, png_file, list_page, color_blind_filter, dpi):
     """
     |----------------------------------------------------------------------|
     |/!\ - This version is radically different from the version 5 !!!  /!\ |
@@ -282,7 +282,7 @@ def main(pdf_file, png_file, list_page, color_blind_filter):
 
 
     # CREATES PNG OUT OF A PDF
-    PDF2jpg(pdf_file, png_file, list_page)
+    PDF2jpg(pdf_file, png_file, list_page, dpi)
 
     dico_im_pdf = {}
     for page in list_page:
@@ -310,6 +310,4 @@ def main(pdf_file, png_file, list_page, color_blind_filter):
 
 # main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', [1, 3, 5], (30, 10, 80))
 # main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', 'D:\PDF_File\imagesPDF', [1, 5, 6, 7, 8, 9, 10, 20, 30, 40, 42], (10, 25, 80))
-
-
 # PDF2jpg('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF', [1, 3, 5, 28, 130])

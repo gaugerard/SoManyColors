@@ -12,17 +12,17 @@ import time
 import math
 
 
-def PDF2jpg(pdf_file, jpg_file, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
+def PDF2jpg(pdf_file, jpg_file, dpi, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
     Converts each page of a PDF into png and saves them in jpg_file directory
     :param pdf_file: the pdf source's directory
     :param jpg_file: the file of destination
     :param ImageMagickConvert_file: the directory where ImageMagick\convert is located
     """
-
+    stringDensity = ' -density ' + str(dpi) + ' '
     # -density 300 = will set the dpi to 300
     # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
-    call(ImageMagickConvert_file + ' -density 300 ' + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
+    call(ImageMagickConvert_file + stringDensity + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
     #call(ImageMagickConvert_file + ' ' + pdf_file + ' ' + jpg_file + '\image.png')
 
 
@@ -191,7 +191,7 @@ def colorfilterok(colorfilter):
     return True
 
 
-def main(pdf_file, color_blind_filter, png_file='D:\PDF_File\imagesPDF'):
+def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
     """
     |----------------------------------------------------------------------|
     |/!\ - This version is radically different from the version 5 !!!  /!\ |
@@ -224,7 +224,7 @@ def main(pdf_file, color_blind_filter, png_file='D:\PDF_File\imagesPDF'):
     print 'Filter to apply : ', color_blind_filter
 
     # CREATES PNG OUT OF A PDF
-    PDF2jpg(pdf_file, png_file)
+    PDF2jpg(pdf_file, png_file, dpi)
 
     # ---------------------------------------------------------
     # TEST IF IT IS A PNG OR NOT AND THEN CONVERT ITS COLOR
