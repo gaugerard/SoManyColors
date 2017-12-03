@@ -84,6 +84,7 @@ def change_color(png_file, image, R_value, G_value, B_value):
     image_m_name = image_name + '_m.' + (imtype.lower())
     directory = png_file + "\\" + str(image_m_name)
     im.save(directory)
+    im.close()
 
     return image_m_name
 
@@ -110,6 +111,7 @@ def change2pdf(png_file, jpeg_name, type_im):
     if not os.path.exists(new_filename):
         im.save(new_filename, "pdf", resolution=100.0)
 
+    im.close()
     return pdf_name
 
 
@@ -132,6 +134,7 @@ def mergePDF(pdf_file, png_file, dico_im_pdf):
             # print 'SUPPRESION dico_im_m MERGEPDF = ', dico_im_pdf
 
     merger.write(pdf_m_name)
+    merger.close()
 
 
 def path_leaf(path):
@@ -289,6 +292,6 @@ def main(pdf_file, png_file, page, color_blind_filter, dpi):
     movePDF(pdf_file)  # <-------------------------------------------------------------
 
 
-# main('D:\PDF_File\PDF_echo.pdf', 'D:\PDF_File\imagesPDF', 1, (25, 50, 100))
+# main('D:\PDF_File\PDF_echo.pdf', 'D:\PDF_File\imagesPDF', 1, (25, 50, 100), 72)
 # PDF2jpg('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 4, 72)
 

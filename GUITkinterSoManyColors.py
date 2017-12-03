@@ -20,9 +20,9 @@ label6 = Label(root, text="Enter BLUE value : ", font=("arial", 10, "bold"), fg=
 label7 = Label(root, text="Enter test page : ", font=("arial", 10, "bold"), fg="black").place(x=10, y=320)
 
 nameSrc = StringVar()
-entry_box = Entry(root, textvariable=nameSrc, width=90, bg='lightgreen').place(x=225, y=200)
+entry_box1 = Entry(root, textvariable=nameSrc, width=90, bg='lightgreen').place(x=225, y=200)
 nameDest = StringVar()
-entry_box = Entry(root, textvariable=nameDest, width=90, bg='lightgreen').place(x=225, y=220)
+entry_box2 = Entry(root, textvariable=nameDest, width=90, bg='lightgreen').place(x=225, y=220)
 
 dpi = IntVar()
 dpi_entry = Entry(root, textvariable=dpi, width=4, bg='lightgreen').place(x=225, y=240)
@@ -79,7 +79,6 @@ def estimateTime():
     :return: estimateT
     """
 
-
     fp = open(str(nameSrc.get()), 'rb')
     parser = PDFParser(fp)
     document = PDFDocument(parser)
@@ -100,8 +99,9 @@ def estimateTime():
     print "Estimate Time ( 300 dpi ) : ", time300dpi
 
     estimateT = [time72dpi, time150dpi, time300dpi]
+    parser.close()
+    fp.close()
     return estimateT
-
 
 
 test = Button(root, text="Test path", width=15, height=2, bg='lightblue', command=is_valid).place(x=60, y=340)

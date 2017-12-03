@@ -62,6 +62,7 @@ def change_color(png_file, image, R_value, G_value, B_value):
     image_m_name = image_name + '_m.' + (imtype.lower())
     directory = png_file + "\\" + str(image_m_name)
     im.save(directory)
+    im.close()
 
     return image_m_name
 
@@ -88,6 +89,7 @@ def change2pdf(png_file, jpeg_name, type_im):
     if not os.path.exists(new_filename):
         im.save(new_filename, "pdf", density='300x300')
 
+    im.close()
     return pdf_name
 
 
@@ -111,6 +113,7 @@ def mergePDF(pdf_file, png_file, dico_im_pdf):
                 # print 'SUPPRESION dico_im_m MERGEPDF = ', dico_im_pdf
 
     merger.write(pdf_m_name)
+    merger.close()
 
 
 def path_leaf(path):
@@ -213,7 +216,6 @@ def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
     pathexists(pdf_file)
     pathexists(png_file)
 
-
     # CLEANS THE DIRECTORY WHERE .png WILL BE MANIPULATED
     setup(pdf_file, png_file)
 
@@ -246,7 +248,6 @@ def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
     #print 'ETAT liste_im_m1 = ', liste_im_m, 'dico_im_m1 = ', dico_im_pdf
     # ---------------------------------------------------------
 
-
     # CHANGES .png INTO .pdf
     for num in range(dico_im_pdf['nbr_pages']):
         image_m = 'image-' + str((num)) + '_m.png'
@@ -276,5 +277,5 @@ def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
 # main('C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\PDFsrc.gitignore\ML_12_clustering_slides_300dpi.pdf', (0, 100, 0), 'C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir.gitignore')
 # main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', (10, 25, 80), 'D:\PDF_File\imagesPDF')
 # main('D:\PDF_File\intro_prog_01_introduction_slides.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
-# main('D:\PDF_File\PDF_echo.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
+# main('D:\PDF_File\PDF_echo.pdf',  (30, 10, 80), 150, 'D:\PDF_File\imagesPDF')
 # PDF2jpg('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF')

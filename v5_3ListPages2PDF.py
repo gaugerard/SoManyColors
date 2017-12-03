@@ -86,6 +86,7 @@ def change_color(png_file, image, R_value, G_value, B_value):
     image_m_name = image_name + '_m.' + (imtype.lower())
     directory = png_file + "\\" + str(image_m_name)
     im.save(directory)
+    im.close()
 
     return image_m_name
 
@@ -112,6 +113,7 @@ def change2pdf(png_file, jpeg_name, type_im):
     if not os.path.exists(new_filename):
         im.save(new_filename, "pdf", resolution=100.0)
 
+    im.close()
     return pdf_name
 
 
@@ -280,7 +282,6 @@ def main(pdf_file, png_file, list_page, color_blind_filter, dpi):
     print 'List of pages to process : ', list_page
     print 'Filter to apply : ', color_blind_filter
 
-
     # CREATES PNG OUT OF A PDF
     PDF2jpg(pdf_file, png_file, list_page, dpi)
 
@@ -303,11 +304,12 @@ def main(pdf_file, png_file, list_page, color_blind_filter, dpi):
         mergePDF(png_file, dico_im_pdf, page, merger)
 
     merger.write(pdf_m_name)
+    merger.close()
 
     # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
     movePDF(pdf_file)  # <-------------------------------------------------------------
 
 
 # main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', [1, 3, 5], (30, 10, 80))
-# main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', 'D:\PDF_File\imagesPDF', [1, 5, 6, 7, 8, 9, 10, 20, 30, 40, 42], (10, 25, 80))
+# main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', 'D:\PDF_File\imagesPDF', [1, 5], (10, 25, 80), 300)
 # PDF2jpg('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF', [1, 3, 5, 28, 130])
