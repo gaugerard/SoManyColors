@@ -5,26 +5,28 @@ import imghdr
 from PyPDF2 import PdfFileMerger
 import ntpath
 from subprocess import call
-import sys
-import time
 
 
 def PDF2jpg(pdf_file, jpg_file, list_page, dpi,  ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
     Converts each page of a PDF into png and saves them in jpg_file directory
+
+    -density 300 = will set the dpi to 300
+    -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
+
     :param pdf_file: the pdf source's directory
     :param jpg_file: the file of destination
+    :param list_page: a list of pages that needs to be converted
+    :param dpi: the dpi of each image
     :param ImageMagickConvert_file: the directory where ImageMagick\convert is located
     """
     stringDensity = ' -density ' + str(dpi) + ' '
-    # voir list dans convert imageMagick
+
     pages = []
     for page in list_page:
         pages.append(page-1)
 
     liste = str(pages).replace(' ', '')
-    # -density 300 = will set the dpi to 300
-    # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
     call(ImageMagickConvert_file + stringDensity + pdf_file + liste + ' -quality 100 ' + jpg_file + '\im.png')
 
     # RENAME THE IMAGE WITH THE CORRECT PAGES THEY REPRESENTS
@@ -68,9 +70,8 @@ def change_color(png_file, image, R_value, G_value, B_value):
 
     # INFORMATION :
     imtype = imghdr.what(direct_name)  # give the type of a image so we can remov it from the name and modify it
-
-    width = im.size[0]  # in pixels
-    height = im.size[1]  # in pixels
+    width = im.size[0]  # size in pixels
+    height = im.size[1]
     image_name = image.replace("." + imtype.lower(), "")  # name without the type
 
     for x in range(width):
@@ -121,7 +122,6 @@ def mergePDF(png_file, dico_im_pdf, page, merger):
     """
     Merges every PDF of a file into a single bigger PDF
     :param png_file: the directory where the png from the PDF are saved
-    :param merger: an object merger that allows the merging of PDF pages
     :param dico_im_pdf: a dictionary which contains all the name of the PDFs that needs to be merged
     :param page: the number of the page we will merge
     :param merger: the merger object that allows the merging of PDFs
@@ -129,9 +129,7 @@ def mergePDF(png_file, dico_im_pdf, page, merger):
 
     if (dico_im_pdf[page] in os.listdir(png_file)) and ((dico_im_pdf[page]).endswith('.pdf')):
             merger.append(png_file + '\\' + dico_im_pdf[page])
-            # os.remove(png_file + '\\' + dico_im_pdf[page])  cant remove the pdf :/ ...
             del dico_im_pdf[page]
-            # print 'SUPPRESION dico_im_m MERGEPDF = ', dico_im_pdf
 
 
 def path_leaf(path):
@@ -147,13 +145,11 @@ def movePDF(pdf_file):
     """
     Moves a pdf from the current directory ( where the PDF is created by the program )  to the directory where the src
     PDF was taken from.
-
     (
     exe :
     src PDF = PDF_delta.pdf       in directory 'C\pdf'
     dest PDF = PDF_delta_m.pdf    in directory 'C\pdf'
     )
-
     :param pdf_file: the directory of the source PDF
     """
     pdf_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # ( exe : PDF_delta.pdf --> PDF_delta_m.pdf )
@@ -174,17 +170,14 @@ def PDFProcess2PDF(png_file, page, dico_im_pdf, color_blind_filter):
     """
     Create a new pdf for a selected page of a src PDF ( ONLY ONE PAGE )
     :param png_file: file where all the created .png will be saved
-    :param color_blind_filter: a list of 3 integer that are added to the RGB of a pixel ( exe : (80, 60, 30) )
     :param page: a page we want to process ( INTEGER ), ( exe :  page = 1 --> image-0.png )
-    :return
+    :param dico_im_pdf: a dictionary that holds all pdf images name
+    :param color_blind_filter: a list of 3 integer that are added to the RGB of a pixel ( exe : (80, 60, 30) )
+    :return dico_im_pdf: a dictionary that holds all the pdf images name
     """
 
-
-    # ---------------------------------------------------------
     # TEST IF IT IS A PNG OR NOT AND THEN CONVERT ITS COLOR
     liste_im_m = []  # list of modified images ( will be completed after the FOR )
-
-
     im_name = 'image-' + str(page-1) + '.png'
     num = page
     if im_name in os.listdir(png_file):
@@ -193,8 +186,8 @@ def PDFProcess2PDF(png_file, page, dico_im_pdf, color_blind_filter):
             dico_im_pdf[num] = ''
 
     # ---------------------------------------------------------
-
     # CHANGES .png INTO .pdf
+
     image_m = 'image-' + str(page-1) + '_m.png'
     direct_name = png_file + '\\' + image_m
     type_im_m = imghdr.what(direct_name)
@@ -206,13 +199,13 @@ def PDFProcess2PDF(png_file, page, dico_im_pdf, color_blind_filter):
     if png.endswith('.png'):
         os.remove(png_file + '\\' + png)
 
-    # print 'PAGE ' + str(page) + ' liste_im_m : ', liste_im_m
     return dico_im_pdf
 
 
 def setup(pdf_file, png_file):
     """
     Deletes the PDF on the png_file path
+    :param pdf_file: the path where the pdf is stored
     :param png_file: the path where the images and pdf will be manipulated by the program
     """
 
@@ -231,12 +224,23 @@ def setup(pdf_file, png_file):
 
 
 def pathexists(path):
+    """
+    Checks if a path to a directory exists or not.
+    :param path:
+    :return: True if path exists, else False
+    """
     if not os.path.exists(path):
         raise Exception('NotExistingPathException')
     return True
 
 
 def colorfilterok(colorfilter):
+    """
+    Checks if the color filter is correct or not. it checks its length, its variables ( must be int/float ) and its
+    variables values ( between 0 and 255 ).
+    :param colorfilter: a list of 3 int that represents the RGB of an image
+    :return: True if colorfilter is correct, else False
+    """
     if len(colorfilter) != 3:
         raise Exception('SizeTupleException')
 
@@ -252,21 +256,17 @@ def colorfilterok(colorfilter):
 
 def main(pdf_file, png_file, list_page, color_blind_filter, dpi):
     """
-    |----------------------------------------------------------------------|
-    |/!\ - This version is radically different from the version 5 !!!  /!\ |
-    |----------------------------------------------------------------------|
+    Converts a list of pages from PDF into a PDF for colorblind. It changes every pixels of the pdf to suit a specific colorblind
+    type.
 
-    VERSION 5.1:
+    VERSION 5.3:
     ----------
     Create a new pdf for a selected page of a src PDF ( ONLY ONE PAGE )
     :param pdf_file: the directory of the pdf that you want to convert into .png
     :param png_file: file where all the created .png will be saved
-    :param color_blind_filter: a list of 3 integer that are added to the RGB of a pixel ( exe : (80, 60, 30) )
     :param list_page: the pages we want to process ( [INTEGER, INTEGER, ...] ), ( exe :  page = 1 --> image-0.png )
-
-    |----------------------------------------------------------------------|
-    |/!\ - This version is radically different from the version 5 !!!  /!\ |
-    |----------------------------------------------------------------------|
+    :param color_blind_filter: a list of 3 integer that are added to the RGB of a pixel ( exe : (80, 60, 30) )
+    :param dpi: the dpi of each image
     """
     colorfilterok(color_blind_filter)
     pathexists(pdf_file)
@@ -295,7 +295,6 @@ def main(pdf_file, png_file, list_page, color_blind_filter, dpi):
         if png.endswith('.png'):
             os.remove(png_file + '\\' + png)
 
-    # ---------------------------------------------------------
     # MERGES THE PDF
     pdf_m_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # exe : PDF_delta.pdf --> PDF_delta_m.pdf
     merger = PdfFileMerger()
@@ -307,7 +306,7 @@ def main(pdf_file, png_file, list_page, color_blind_filter, dpi):
     merger.close()
 
     # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
-    movePDF(pdf_file)  # <-------------------------------------------------------------
+    movePDF(pdf_file)
 
 
 # main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', [1, 3, 5], (30, 10, 80))

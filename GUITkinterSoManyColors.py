@@ -2,8 +2,8 @@ from Tkinter import *
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfpage import PDFPage
-import v5_1PDFintoJPG, v5_2ChoosenPage2PDF, v5_3ListPages2PDF
-import re
+import tkMessageBox
+import v5_1PDFintoJPG, v5_2ChoosenPage2PDF
 
 root = Tk()
 root.title("SoManyColors")
@@ -38,12 +38,19 @@ numTest_entry = Entry(root, textvariable=numTest, width=4, bg='lightgreen').plac
 
 
 def add_value():
+    """
+    Adds the given RBG value to the colorfilter
+    :return tuple: the colorfilter with the givven RBG value ( ex: (0, 100, 255) )
+    """
 
     tuple = (int(red.get()), int(green.get()), int(blue.get()))
     return tuple
 
 
 def is_valid():
+    """
+    Shows if a path to a directory is valid or not.
+    """
 
     if v5_1PDFintoJPG.pathexists(str(nameSrc.get())):
         print("VALID " + str(nameSrc.get()))
@@ -53,14 +60,18 @@ def is_valid():
 
 
 def convertFull():
-    # CREATE A NEW PROCESSSUS
+    """
+    Converts all the PDF into another PDF for colorblind.
+    """
 
     tuple = add_value()
     v5_1PDFintoJPG.main(str(nameSrc.get()), tuple, dpi.get(), str(nameDest.get()))
 
 
 def convertTest():
-    # CREATE A NEW PROCESSUS
+    """
+    Converts a page of the PDF to test the colorfiler.
+    """
 
     tuple = add_value()
     page = int(numTest.get())
@@ -69,14 +80,13 @@ def convertTest():
 
 def estimateTime():
     """
-    IMPROVE THIS METHODE BY KNOWING THE PAGE SIZE
+    IMPROVE THIS METHOD BY KNOWING THE PAGE SIZE
                             72dpi       150dpi      300dpi
     TIME for a page 4A :    1.6s        6.2s        23.2s
     TIME for smaller p :    0.5s        1.7s        7.1s
     TIME for larger p :     2.3s        14.2s       49.1s
 
                                 -> x4 ->     -> x4 ->
-    :return: estimateT
     """
 
     fp = open(str(nameSrc.get()), 'rb')
@@ -98,21 +108,23 @@ def estimateTime():
     print "Estimate Time ( 150 dpi ) : ", time150dpi
     print "Estimate Time ( 300 dpi ) : ", time300dpi
 
-    estimateT = [time72dpi, time150dpi, time300dpi]
     parser.close()
     fp.close()
-    return estimateT
 
 
-test = Button(root, text="Test path", width=15, height=2, bg='lightblue', command=is_valid).place(x=60, y=340)
+def Manual():
+   tkMessageBox.showinfo("MANUAL", "1) Choose your PDF by giving its directory.\n 2) Choose the directory where the modification will happen.\n 3) Select the quality of the images (72 = low, 300 = high).\n 4) Select the RGB values.\n 5) Select a page on wich we will test the color filter.")
 
-addFilter = Button(root, text="Add filer", width=15, height=2, bg='lightblue', command=add_value()).place(x=210, y=340)
 
-testFilter = Button(root, text="Test filter", width=15, height=2, bg='lightblue', command=convertTest).place(x=210, y=390)
+test = Button(root, text="Test path", width=15, height=2, bg='lightblue', command=is_valid).place(x=60, y=350)
 
-convert = Button(root, text="Convert PDF", width=15, height=2, bg='lightblue', command=convertFull).place(x=360, y=340)
+testFilter = Button(root, text="Test filter", width=15, height=2, bg='lightblue', command=convertTest).place(x=210, y=350)
 
-estTime = Button(root, text="Estimate time", width=15, height=2, bg='lightblue', command=estimateTime).place(x=360, y=390)
+convert = Button(root, text="Convert PDF", width=15, height=2, bg='lightblue', command=convertFull).place(x=360, y=350)
+
+estTime = Button(root, text="Estimate time", width=15, height=2, bg='lightblue', command=estimateTime).place(x=510, y=350)
+
+B1 = Button(root, text="SHOW MANUAL", width=15, height=2, command=Manual).place(x=360, y=100)
 
 root.mainloop()
 

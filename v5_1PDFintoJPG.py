@@ -1,29 +1,28 @@
 
 import os
-from PIL import Image, EpsImagePlugin
+from PIL import Image
 import imghdr
 from PyPDF2 import PdfFileMerger
 import ntpath
 from subprocess import call
 import os.path
-import sys
 import time
-#import thread
-import math
 
 
 def PDF2jpg(pdf_file, jpg_file, dpi, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
     Converts each page of a PDF into png and saves them in jpg_file directory
+
+    -density 300 = will set the dpi to 300
+    -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
+
     :param pdf_file: the pdf source's directory
     :param jpg_file: the file of destination
+    :param dpi: the dpi of each image
     :param ImageMagickConvert_file: the directory where ImageMagick\convert is located
     """
     stringDensity = ' -density ' + str(dpi) + ' '
-    # -density 300 = will set the dpi to 300
-    # -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion )
     call(ImageMagickConvert_file + stringDensity + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
-    #call(ImageMagickConvert_file + ' ' + pdf_file + ' ' + jpg_file + '\image.png')
 
 
 def change_color(png_file, image, R_value, G_value, B_value):
@@ -44,10 +43,9 @@ def change_color(png_file, image, R_value, G_value, B_value):
     im = Image.open(direct_name)
 
     # INFORMATION :
-    imtype = imghdr.what(direct_name)  # give the type of a image so we can remov it from the name and modify it
-
-    width = im.size[0]  # in pixels
-    height = im.size[1]  # in pixels
+    imtype = imghdr.what(direct_name)  # give the type of a image so we can remove it from the name and modify it
+    width = im.size[0]  # size in pixels
+    height = im.size[1]
     image_name = image.replace("." + imtype.lower(), "")  # name without the type
 
     for x in range(width):
@@ -98,7 +96,6 @@ def mergePDF(pdf_file, png_file, dico_im_pdf):
     Merges every PDF of a file into a single bigger PDF
     :param pdf_file: the directory where the PDF is saved
     :param png_file: the directory where the png from the PDF are saved
-    :param merger: an object merger that allows the merging of PDF pages
     :param dico_im_pdf: a dictionary which contains all the name of the PDFs that needs to be merged
     """
     pdf_m_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # exe : PDF_delta.pdf --> PDF_delta_m.pdf
@@ -129,13 +126,11 @@ def movePDF(pdf_file):
     """
     Moves a pdf from the current directory ( where the PDF is created by the program )  to the directory where the src
     PDF was taken from.
-
     (
     exe :
     src PDF = PDF_delta.pdf       in directory 'C\pdf'
     dest PDF = PDF_delta_m.pdf    in directory 'C\pdf'
     )
-
     :param pdf_file: the directory of the source PDF
     """
     pdf_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # ( exe : PDF_delta.pdf --> PDF_delta_m.pdf )
@@ -155,6 +150,7 @@ def movePDF(pdf_file):
 def setup(pdf_file, png_file):
     """
     Deletes the PDF on the png_file path
+    :param pdf_file: the path where the pdf is stored
     :param png_file: the path where the images and pdf will be manipulated by the program
     """
 
@@ -174,6 +170,11 @@ def setup(pdf_file, png_file):
 
 
 def pathexists(path):
+    """
+    Checks if a path to a directory exists or not.
+    :param path:
+    :return: True if path exists, else False
+    """
     if not os.path.exists(path):
         raise Exception('NotExistingPathException')
 
@@ -181,6 +182,12 @@ def pathexists(path):
 
 
 def colorfilterok(colorfilter):
+    """
+    Checks if the color filter is correct or not. it checks its length, its variables ( must be int/float ) and its
+    variables values ( between 0 and 255 ).
+    :param colorfilter: a list of 3 int that represents the RGB of an image
+    :return: True if colorfilter is correct, else False
+    """
     if len(colorfilter) != 3:
         raise Exception('SizeTupleException')
 
@@ -196,9 +203,8 @@ def colorfilterok(colorfilter):
 
 def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
     """
-    |----------------------------------------------------------------------|
-    |/!\ - This version is radically different from the version 5 !!!  /!\ |
-    |----------------------------------------------------------------------|
+    Converts an entire PDF into a PDF for colorblind. It changes every pixels of the pdf to suit a specific colorblind
+    type.
 
     VERSION 5.1:
     ----------
@@ -206,10 +212,7 @@ def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
     :param pdf_file: the directory of the pdf that you want to convert into .png
     :param png_file: file where all the created .png will be saved
     :param color_blind_filter: a tuple of 3 integer that are added to the RGB of a pixel ( exe : (80, 60, 30) )
-
-    |----------------------------------------------------------------------|
-    |/!\ - This version is radically different from the version 5 !!!  /!\ |
-    |----------------------------------------------------------------------|
+    :param dpi: the dpi of each image
     """
     t1 = time.time()
     colorfilterok(color_blind_filter)
@@ -228,50 +231,49 @@ def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
     # CREATES PNG OUT OF A PDF
     PDF2jpg(pdf_file, png_file, dpi)
 
-    # ---------------------------------------------------------
-    # TEST IF IT IS A PNG OR NOT AND THEN CONVERT ITS COLOR
+    # ----------------------------------------------------------
+    # TEST IF IT IS A PNG OR NOT AND THEN CONVERT ITS COLOR:
+
     liste_im_m = []  # list of modified images ( will be completed after the FOR )
     dico_im_pdf = {}
-
-    # print 'INITIALISATION liste_im_m0 = ', liste_im_m, 'dico_im_m0 = ', dico_im_pdf
 
     num = 0
     for element in os.listdir(png_file):
         if element.endswith('.png'):
-            # print("'%s' est un fichier png" % element)
             liste_im_m.append(change_color(png_file, element, color_blind_filter[0], color_blind_filter[1], color_blind_filter[2]))
             dico_im_pdf[num] = ''
             num = num + 1
 
     dico_im_pdf['nbr_pages'] = num
 
-    #print 'ETAT liste_im_m1 = ', liste_im_m, 'dico_im_m1 = ', dico_im_pdf
-    # ---------------------------------------------------------
+    # ----------------------------------------------------------
+    # CHANGES .png INTO .pdf:
 
-    # CHANGES .png INTO .pdf
     for num in range(dico_im_pdf['nbr_pages']):
         image_m = 'image-' + str((num)) + '_m.png'
         direct_name = png_file + '\\' + image_m
         type_im_m = imghdr.what(direct_name)
         dico_im_pdf[num] = (change2pdf(png_file, image_m, type_im_m))
 
-    # print 'ETAT liste_im_m2 = ', liste_im_m, 'dico_im_m2 = ', dico_im_pdf
-    # ---------------------------------------------------------
-    # DELETES THE .png SINCE WE DON'T NEED THEM ANYMORE
+    # ----------------------------------------------------------
+    # DELETES THE .png SINCE WE DON'T NEED THEM ANYMORE:
+
     for png in os.listdir(png_file):
         if png.endswith('.png'):
             os.remove(png_file + '\\' + png)
 
-    # ---------------------------------------------------------
-    # MERGES THE PDF
-    mergePDF(pdf_file, png_file, dico_im_pdf)
+    # ----------------------------------------------------------
+    # MERGES THE PDF:
 
+    mergePDF(pdf_file, png_file, dico_im_pdf)
     t2 = time.time()
 
     print ('Time taken to process the PDF : ', t2 - t1)
 
+    # ----------------------------------------------------------
     # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
-    movePDF(pdf_file)  # <-------------------------------------------------------------
+
+    movePDF(pdf_file)
 
 
 # main('C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\PDFsrc.gitignore\ML_12_clustering_slides_300dpi.pdf', (0, 100, 0), 'C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir.gitignore')
