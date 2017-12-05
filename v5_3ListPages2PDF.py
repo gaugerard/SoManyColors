@@ -309,6 +309,6 @@ def main(pdf_file, png_file, list_page, color_blind_filter, dpi):
     movePDF(pdf_file)
 
 
-# main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', [1, 3, 5], (30, 10, 80))
+# main('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', [1, 3, 5], (30, 10, 80), 72)
 # main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', 'D:\PDF_File\imagesPDF', [1, 5], (10, 25, 80), 300)
 # PDF2jpg('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF', [1, 3, 5, 28, 130])

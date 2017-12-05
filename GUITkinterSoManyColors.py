@@ -3,7 +3,7 @@ from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfpage import PDFPage
 import tkMessageBox
-import v5_1PDFintoJPG, v5_2ChoosenPage2PDF
+import v5_1PDFintoJPG, v5_2ChoosenPage2PDF, SoManyColors
 
 root = Tk()
 root.title("SoManyColors")
@@ -65,7 +65,8 @@ def convertFull():
     """
 
     tuple = add_value()
-    v5_1PDFintoJPG.main(str(nameSrc.get()), tuple, dpi.get(), str(nameDest.get()))
+    page = int(numTest.get())
+    SoManyColors.main(str(nameSrc.get()), str(nameDest.get()), page, tuple, dpi.get())
 
 
 def convertTest():

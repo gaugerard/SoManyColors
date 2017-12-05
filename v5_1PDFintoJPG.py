@@ -201,7 +201,7 @@ def colorfilterok(colorfilter):
     return True
 
 
-def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
+def main(pdf_file, color_blind_filter, dpi, png_file):
     """
     Converts an entire PDF into a PDF for colorblind. It changes every pixels of the pdf to suit a specific colorblind
     type.
@@ -279,5 +279,5 @@ def main(pdf_file, color_blind_filter, dpi, png_file='D:\PDF_File\imagesPDF'):
 # main('C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\PDFsrc.gitignore\ML_12_clustering_slides_300dpi.pdf', (0, 100, 0), 'C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir.gitignore')
 # main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', (10, 25, 80), 'D:\PDF_File\imagesPDF')
 # main('D:\PDF_File\intro_prog_01_introduction_slides.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
-# main('D:\PDF_File\PDF_echo.pdf',  (30, 10, 80), 150, 'D:\PDF_File\imagesPDF')
+# main('D:\PDF_File\PDF_charlie.pdf',  (30, 10, 80), 150, 'D:\PDF_File\imagesPDF')
 # PDF2jpg('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF')

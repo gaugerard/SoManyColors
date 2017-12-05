@@ -289,6 +289,6 @@ def main(pdf_file, png_file, page, color_blind_filter, dpi):
     movePDF(pdf_file)
 
 
-# main('D:\PDF_File\PDF_echo.pdf', 'D:\PDF_File\imagesPDF', 1, (25, 50, 100), 72)
+# main('D:\PDF_File\PDF_charlie.pdf', 'D:\PDF_File\imagesPDF', 1, (25, 50, 100), 72)
 # PDF2jpg('D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\imagesPDF', 4, 72)
 
