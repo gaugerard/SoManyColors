@@ -25,6 +25,7 @@ def PDF2jpg(pdf_file, jpg_file, page, dpi, ImageMagickConvert_file = 'D:\Program
 
     # RENAME THE IMAGE WITH THE CORRECT PAGES THEY REPRESENTS
     renameImage((page - 1), jpg_file)
+    return
 
 
 def renameImage(page, jpg_file):
@@ -39,10 +40,9 @@ def renameImage(page, jpg_file):
     newName = name.replace('im-0', 'image-' + str(page))
 
     pathexists(name)
-
     os.rename(name, newName)
-
     pathexists(newName)
+    return
 
 
 def change_color(png_file, image, R_value, G_value, B_value):
@@ -82,7 +82,6 @@ def change_color(png_file, image, R_value, G_value, B_value):
     directory = png_file + "\\" + str(image_m_name)
     im.save(directory)
     im.close()
-
     return image_m_name
 
 
@@ -129,6 +128,7 @@ def mergePDF(pdf_file, png_file, dico_im_pdf):
 
     merger.write(pdf_m_name)
     merger.close()
+    return
 
 
 def path_leaf(path):
@@ -159,10 +159,9 @@ def movePDF(pdf_file):
     print 'PDF destination path : ', final_dir
 
     pathexists(current_dir)
-
     os.rename(current_dir, final_dir)
-
     pathexists(final_dir)
+    return
 
 
 def setup(pdf_file, png_file):
@@ -174,8 +173,7 @@ def setup(pdf_file, png_file):
 
     pdf_m_name = path_leaf(pdf_file).replace('.pdf', '_m.pdf')
     pdf_m_path = pdf_file.replace('\\' + path_leaf(pdf_file), '')
-    print pdf_m_name
-    print pdf_m_path
+
     if pdf_m_name in os.listdir(pdf_m_path):
         os.remove(pdf_m_path + '\\' + pdf_m_name)
 
@@ -186,7 +184,7 @@ def setup(pdf_file, png_file):
     for file in os.listdir(png_file):
         if file.endswith('.pdf') or file.endswith('.png'):
             os.remove(png_file + '\\' + file)
-
+    return
 
 def pathexists(path):
     """
@@ -287,6 +285,7 @@ def main(pdf_file, png_file, page, color_blind_filter, dpi):
 
     # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
     movePDF(pdf_file)
+    return
 
 
 # main('D:\PDF_File\PDF_charlie.pdf', 'D:\PDF_File\imagesPDF', 1, (25, 50, 100), 72)

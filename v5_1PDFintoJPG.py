@@ -23,7 +23,7 @@ def PDF2jpg(pdf_file, jpg_file, dpi, ImageMagickConvert_file = 'D:\ProgrammePDF\
     """
     stringDensity = ' -density ' + str(dpi) + ' '
     call(ImageMagickConvert_file + stringDensity + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
-
+    return
 
 def change_color(png_file, image, R_value, G_value, B_value):
     """
@@ -105,12 +105,11 @@ def mergePDF(pdf_file, png_file, dico_im_pdf):
         if (dico_im_pdf[num] in os.listdir(png_file)) and ((dico_im_pdf[num]).endswith('.pdf')):
 
                 merger.append(png_file + '\\' + dico_im_pdf[num])
-                # os.remove(png_file + '\\' + dico_im_pdf[num])  cant remove the pdf :/ ...
                 del dico_im_pdf[num]
-                # print 'SUPPRESION dico_im_m MERGEPDF = ', dico_im_pdf
 
     merger.write(pdf_m_name)
     merger.close()
+    return
 
 
 def path_leaf(path):
@@ -137,14 +136,13 @@ def movePDF(pdf_file):
     current_dir = os.getcwd() + '\\' + pdf_name  # ( exe : current directory of the PDF_delta_m.pdf )
     final_dir = pdf_file.replace('.pdf', '_m.pdf')  # ( exe : directory of PDF_delta.pdf )
 
-    print 'Created PDF src path : ', current_dir
-    print 'PDF destination path : ', final_dir
+    # print 'Created PDF src path : ', current_dir
+    # print 'PDF destination path : ', final_dir
 
     pathexists(current_dir)
-
     os.rename(current_dir, final_dir)
-
     pathexists(final_dir)
+    return
 
 
 def setup(pdf_file, png_file):
@@ -167,7 +165,7 @@ def setup(pdf_file, png_file):
     for file in os.listdir(png_file):
         if file.endswith('.pdf') or file.endswith('.png'):
             os.remove(png_file + '\\' + file)
-
+    return
 
 def pathexists(path):
     """
@@ -195,7 +193,7 @@ def colorfilterok(colorfilter):
         if type(val) != int and type(val) != float and type(val) != long:
             raise Exception('NotIntegerInTupleException')
 
-        if val > 255 or val < 0:
+        if val > 255 or val < -255:
             raise Exception('TupleValuesException')
 
     return True
@@ -267,13 +265,13 @@ def main(pdf_file, color_blind_filter, dpi, png_file):
 
     mergePDF(pdf_file, png_file, dico_im_pdf)
     t2 = time.time()
-
     print ('Time taken to process the PDF : ', t2 - t1)
 
     # ----------------------------------------------------------
     # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
 
     movePDF(pdf_file)
+    return
 
 
 # main('C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\PDFsrc.gitignore\ML_12_clustering_slides_300dpi.pdf', (0, 100, 0), 'C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir.gitignore')

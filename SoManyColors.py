@@ -20,7 +20,6 @@ def page_pdf(pdf):
 
 def main(pdf_file, png_file, page, color_blind_filter, dpi):
 
-    print
     if page_pdf(pdf_file) == 1:
 
         if page == 0:

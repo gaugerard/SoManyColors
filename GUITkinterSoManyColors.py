@@ -37,16 +37,6 @@ numTest = IntVar()
 numTest_entry = Entry(root, textvariable=numTest, width=4, bg='lightgreen').place(x=225, y=320)
 
 
-def add_value():
-    """
-    Adds the given RBG value to the colorfilter
-    :return tuple: the colorfilter with the givven RBG value ( ex: (0, 100, 255) )
-    """
-
-    tuple = (int(red.get()), int(green.get()), int(blue.get()))
-    return tuple
-
-
 def is_valid():
     """
     Shows if a path to a directory is valid or not.
@@ -58,15 +48,18 @@ def is_valid():
     if v5_1PDFintoJPG.pathexists(str(nameDest.get())):
         print("VALID" + str(nameDest.get()))
 
+    return
+
 
 def convertFull():
     """
     Converts all the PDF into another PDF for colorblind.
     """
 
-    tuple = add_value()
+    tuple = (int(red.get()), int(green.get()), int(blue.get()))
     page = int(numTest.get())
     SoManyColors.main(str(nameSrc.get()), str(nameDest.get()), page, tuple, dpi.get())
+    return
 
 
 def convertTest():
@@ -74,9 +67,10 @@ def convertTest():
     Converts a page of the PDF to test the colorfiler.
     """
 
-    tuple = add_value()
+    tuple = (int(red.get()), int(green.get()), int(blue.get()))
     page = int(numTest.get())
     v5_2ChoosenPage2PDF.main(str(nameSrc.get()), str(nameDest.get()), page, tuple, dpi.get())
+    return
 
 
 def estimateTime():
@@ -89,6 +83,12 @@ def estimateTime():
 
                                 -> x4 ->     -> x4 ->
     """
+
+
+
+    # see change_color pour avoir la dimension de l'imahge en pixel et donc generer un calcul plus precis
+
+
 
     fp = open(str(nameSrc.get()), 'rb')
     parser = PDFParser(fp)
@@ -111,10 +111,12 @@ def estimateTime():
 
     parser.close()
     fp.close()
+    return
 
 
 def Manual():
-   tkMessageBox.showinfo("MANUAL", "1) Choose your PDF by giving its directory.\n 2) Choose the directory where the modification will happen.\n 3) Select the quality of the images (72 = low, 300 = high).\n 4) Select the RGB values.\n 5) Select a page on wich we will test the color filter.")
+    tkMessageBox.showinfo("MANUAL", "1) Choose your PDF by giving its directory.\n 2) Choose the directory where the modification will happen.\n 3) Select the quality of the images (72 = low, 300 = high).\n 4) Select the RGB values.\n 5) Select a page on wich we will test the color filter.")
+    return
 
 
 test = Button(root, text="Test path", width=15, height=2, bg='lightblue', command=is_valid).place(x=60, y=350)

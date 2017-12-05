@@ -248,7 +248,7 @@ def colorfilterok(colorfilter):
         if type(val) != int and type(val) != float and type(val) != long:
             raise Exception('NotIntegerInTupleException')
 
-        if val > 255 or val < 0:
+        if val > 255 or val < -255:
             raise Exception('TupleValuesException')
 
     return True
