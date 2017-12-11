@@ -221,10 +221,10 @@ def main(pdf_file, color_blind_filter, dpi, png_file):
     setup(pdf_file, png_file)
 
     # PRINT INFORMATION ABOUT THE PROCESS
-    print '\n'
-    print 'PDF source path : ', pdf_file
-    print 'File of processes : ', png_file
-    print 'Filter to apply : ', color_blind_filter
+    # print '\n'
+    # print 'PDF source path : ', pdf_file
+    # print 'File of processes : ', png_file
+    # print 'Filter to apply : ', color_blind_filter
 
     # CREATES PNG OUT OF A PDF
     PDF2jpg(pdf_file, png_file, dpi)

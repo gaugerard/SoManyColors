@@ -53,7 +53,7 @@ def is_valid():
 
 def convertFull():
     """
-    Converts all the PDF into another PDF for colorblind.
+    Converts all the PDF into another PDF for colorblind.<
     """
 
     tuple = (int(red.get()), int(green.get()), int(blue.get()))
