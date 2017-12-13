@@ -467,6 +467,5 @@ def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png
 
 
 # pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file
-#main("C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\PDFsrc\ishihara38.pdf", 72, "protanope_vision", 3, 2,
- #    [1],"C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir")
+# main("D:\PDF_File\PDF_delta.pdf", 300, "protanope_vision", 3, 2)
 

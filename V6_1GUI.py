@@ -29,7 +29,7 @@ class SoManyColorsapp(tk.Tk):
 
         self.frames = {}
 
-        for F in (Menu, Menu_test):  # creates a dictionary of frame.
+        for F in (Menu, Menu_conversion):  # creates a dictionary of frame.
 
             frame = F(container, self)
 
@@ -58,6 +58,8 @@ class Menu(tk.Frame):  # create start page.
         # VARIABLES
         self.pdffile = tk.StringVar()
         self.maxpage = tk.IntVar()
+        self.widthpage = tk.IntVar()
+        self.heightpage = tk.IntVar()
 
         # LABELS
         self.label0 = tk.Label(self, text="Selectionner un pdf a convertir : ", font=("arial", 10, "bold"),
@@ -67,9 +69,10 @@ class Menu(tk.Frame):  # create start page.
         self.pdf_button = ttk.Button(self, text="pdf", command=lambda: self.askpdf())
         self.pdf_button.place(x=280, y=150)
 
-        self.tester_button = ttk.Button(self, text="Tester filtre", command=lambda: controller.show_frame(Menu_test))
+        self.tester_button = ttk.Button(self, text="Conversion pdf", command=lambda: controller.show_frame(Menu_conversion))
         self.tester_button.place(x=50, y=230)
 
+        # IMAGE
         self.imagetest = Image.open("C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\image_gui\Webp.net-resizeimage.png")
         self.phototest = ImageTk.PhotoImage(self.imagetest)
         self.label13 = tk.Label(self, image=self.phototest)
@@ -95,8 +98,7 @@ class Menu(tk.Frame):  # create start page.
         parser.close()
         fp.close()
 
-
-class Menu_test(tk.Frame):  # goes to page one.
+class Menu_conversion(tk.Frame):  # create page two.
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -136,37 +138,41 @@ class Menu_test(tk.Frame):  # goes to page one.
         self.button1 = ttk.Button(self, text="retour Menu", command=lambda: controller.show_frame(Menu))
         self.button1.pack()
 
-        self.button2 = ttk.Button(self, text="INITIALISER LE TESTE", command=lambda: self.generatevalue())
-        self.button2.place(x=330, y=110)
+        self.button2 = ttk.Button(self, text="CONVERTIR", command=lambda: self.lancerconversion())
+        self.button2.place(x=530, y=500)
 
-        self.button2 = ttk.Button(self, text="LANCER LE TESTE", command=lambda: self.lancertest())
-        self.button2.place(x=330, y=500)
+        self.button3 = ttk.Button(self, text="LANCER LE TESTE", command=lambda: self.lancertest())
+        self.button3.place(x=330, y=500)
+
+        self.button4 = ttk.Button(self, text="ESTIMATION DU TEMPS DE CONVERSION", command=lambda: self.calcultemps())
+        self.button4.place(x=60, y=500)
 
         # LABELS
-        self.label1 = tk.Label(self, text="Menu_test", font=LARGE_FONT)
+        self.label1 = tk.Label(self, text="Menu_conversion", font=LARGE_FONT)
         self.label1.pack(pady=10, padx=10)
-        self.label2 = tk.Label(self, text="Selectionner une page pour le teste : ", font=("arial", 10, "bold"), fg="black").place(x=20, y=150)
+        self.label2 = tk.Label(self, text="Selectionner une page pour le teste : ", font=("arial", 10, "bold"),
+                               fg="black").place(x=20, y=150)
         self.label3 = tk.Label(self, text=self.pdf, font=LARGE_FONT)
         self.label3.pack(pady=10, padx=10)
 
         # UNAMUR
-        self.imagetest = Image.open("C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\image_gui\Webp.net-resizeimage.png")
+        self.imagetest = Image.open(
+            "C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\image_gui\Webp.net-resizeimage.png")
         self.phototest = ImageTk.PhotoImage(self.imagetest)
         self.label13 = tk.Label(self, image=self.phototest)
         self.label13.place(x=150, y=0)
 
-    def generatevalue(self):
         menu = self.controller.get_page(Menu)
         self.nbrpage = menu.maxpage.get()
         self.pdf = menu.pdffile.get()
 
         # SCALE
-        self.pagescale = tk.Scale(self, from_=self.nbrpage, to=1)
+        self.pagescale = tk.Scale(self, from_=20, to=1)
         self.pagescale.place(x=258, y=150)
         self.choosenpage.set(self.pagescale.get())
 
         self.dpiscale = tk.Scale(self, from_=300, to=72)
-        self.dpiscale.place(x=246, y=260)
+        self.dpiscale.place(x=252, y=260)
         self.dpi.set(self.dpiscale.get())
 
         self.amountdscale = tk.Scale(self, from_=1, to=10)
@@ -176,6 +182,7 @@ class Menu_test(tk.Frame):  # goes to page one.
         self.amounttscale = tk.Scale(self, from_=1, to=10)
         self.amounttscale.place(x=542, y=260)
         self.amounttrans.set(self.amounttscale.get())
+
 
     def lancertest(self):
         menu = self.controller.get_page(Menu)
@@ -192,23 +199,41 @@ class Menu_test(tk.Frame):  # goes to page one.
         newdirectory = V6_1PDFColorMatrix.main(pdf_file, dpi, typecvd, amountdalto, amounttransf, page)
         tkMessageBox.showinfo("TESTE", "L'image teste se trouve a : " + str(newdirectory))
 
-"""
-class PageTwo(tk.Frame):  # create page two.
+    def lancerconversion(self):
+        menu = self.controller.get_page(Menu)
 
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page Two", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
+        pdf_file = str(menu.pdffile.get())
+        typecvd = str(self.daltotype.get())
+        dpi = int(self.dpiscale.get())
+        page = [int(self.choosenpage.get())]
+        amountdalto = int(self.amountdscale.get())
+        amounttransf = int(self.amounttrans.get())
+        # print pdf_file, dpi, typecvd, page, amountdalto, amounttransf
 
-        button1 = ttk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        # pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file
+        newdirectory = V6_1PDFColorMatrix.main(pdf_file, dpi, typecvd, amountdalto, amounttransf, page)
+        tkMessageBox.showinfo("CONVERSION", "L'image teste se trouve a : " + str(newdirectory))
 
-        button2 = ttk.Button(self, text="Page One",
-                            command=lambda: controller.show_frame(PageOne))
-        button2.pack()
+    def calcultemps(self):
+        menu = self.controller.get_page(Menu)
+        nbrpage = int(menu.maxpage.get())
+        dpi = int(self.dpiscale.get())
+        if dpi//72 == 1:
+            nbrsecondperpage = 1.6
 
-"""
+        if dpi//72 == 2:
+            nbrsecondperpage = 6.4
+
+        if dpi//72 == 3:
+            nbrsecondperpage = 12.8
+
+        if dpi//72 == 4:
+            nbrsecondperpage = 25.6
+
+        averagetime = nbrpage*nbrsecondperpage
+        tkMessageBox.showinfo("TEMPS ESTIME", "Temps estime : " + str(averagetime))
+
+
 
 app = SoManyColorsapp()
 app.mainloop()
