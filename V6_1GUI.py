@@ -1,9 +1,9 @@
-
 import V6_1PDFColorMatrix
 import Tkinter as tk
-import Tkinter, Tkconstants, tkFileDialog
+import tkFileDialog
 from PIL import Image, ImageTk
 import ttk
+import tkMessageBox
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfpage import PDFPage
@@ -39,7 +39,6 @@ class SoManyColorsapp(tk.Tk):
 
         self.show_frame(Menu)
 
-
     def show_frame(self, cont):  # raise a frame to the top.
 
         frame = self.frames[cont]
@@ -58,42 +57,29 @@ class Menu(tk.Frame):  # create start page.
 
         # VARIABLES
         self.pdffile = tk.StringVar()
-        #self.workfile = tk.StringVar()
         self.maxpage = tk.IntVar()
 
         # LABELS
         self.label0 = tk.Label(self, text="Selectionner un pdf a convertir : ", font=("arial", 10, "bold"),
                                fg="black").place(x=10, y=150)
-        #self.label1 = tk.Label(self, text="Selectionner un dossier vide : ", font=("arial", 10, "bold"),
-        #                      fg="black").place(x=10, y=180)
 
         # BUTTONS
         self.pdf_button = ttk.Button(self, text="pdf", command=lambda: self.askpdf())
         self.pdf_button.place(x=280, y=150)
 
-        #self.dossier_button = ttk.Button(self, text="dossier", command=lambda: self.askfile())
-        #self.dossier_button.place(x=280, y=180)
-
         self.tester_button = ttk.Button(self, text="Tester filtre", command=lambda: controller.show_frame(Menu_test))
         self.tester_button.place(x=50, y=230)
-
-
-
 
         self.imagetest = Image.open("C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\image_gui\Webp.net-resizeimage.png")
         self.phototest = ImageTk.PhotoImage(self.imagetest)
         self.label13 = tk.Label(self, image=self.phototest)
         self.label13.place(x=150, y=0)
 
-    #def askfile(self):
-        #filename = tkFileDialog.askopenfilename(initialdir="/", title="Select file",
-        #                                             filetypes=(("pdf files", "*.pdf"), ("all files", "*.*")))
-        #self.workfile.set(filename)
-
     def askpdf(self):
         filename = tkFileDialog.askopenfilename(initialdir="/", title="Select file",
                                                      filetypes=(("pdf files", "*.pdf"), ("all files", "*.*")))
         self.pdffile.set(filename)
+        # print filename
 
         fp = open(str(filename), 'rb')
         parser = PDFParser(fp)
@@ -104,8 +90,8 @@ class Menu(tk.Frame):  # create start page.
             num_pages += 1
 
         self.maxpage.set(num_pages)
-        print self.pdffile.get()
-        print self.maxpage.get()
+        # print self.pdffile.get()
+        # print self.maxpage.get()
         parser.close()
         fp.close()
 
@@ -119,7 +105,7 @@ class Menu_test(tk.Frame):  # goes to page one.
 
         menu = self.controller.get_page(Menu)
 
-        #VARIABLES
+        # VARIABLES
         self.nbrpage = menu.maxpage.get()
         self.choosenpage = tk.IntVar()
         self.pdf = menu.pdffile.get()
@@ -157,8 +143,6 @@ class Menu_test(tk.Frame):  # goes to page one.
         self.button2.place(x=330, y=500)
 
         # LABELS
-
-
         self.label1 = tk.Label(self, text="Menu_test", font=LARGE_FONT)
         self.label1.pack(pady=10, padx=10)
         self.label2 = tk.Label(self, text="Selectionner une page pour le teste : ", font=("arial", 10, "bold"), fg="black").place(x=20, y=150)
@@ -170,8 +154,6 @@ class Menu_test(tk.Frame):  # goes to page one.
         self.phototest = ImageTk.PhotoImage(self.imagetest)
         self.label13 = tk.Label(self, image=self.phototest)
         self.label13.place(x=150, y=0)
-
-
 
     def generatevalue(self):
         menu = self.controller.get_page(Menu)
@@ -189,34 +171,28 @@ class Menu_test(tk.Frame):  # goes to page one.
 
         self.amountdscale = tk.Scale(self, from_=1, to=10)
         self.amountdscale.place(x=542, y=150)
-        self.amountdalto.set(self.dpiscale.get())
+        self.amountdalto.set(self.amountdscale.get())
 
         self.amounttscale = tk.Scale(self, from_=1, to=10)
         self.amounttscale.place(x=542, y=260)
-        self.amounttrans.set(self.dpiscale.get())
-
+        self.amounttrans.set(self.amounttscale.get())
 
     def lancertest(self):
         menu = self.controller.get_page(Menu)
 
-        pdf_file = menu.pdffile.get()
-        dpi = self.dpi.get()
-        #png_file = menu.workfile.get()
-        typeCVD = self.daltotype.get()
-        page = [self.choosenpage.get()]
-        amountDalto = self.amountdscale.get()
-        amountTransf = self.amounttrans.get()
+        pdf_file = str(menu.pdffile.get())
+        typecvd = str(self.daltotype.get())
+        dpi = int(self.dpi.get())
+        page = [int(self.choosenpage.get())]
+        amountdalto = int(self.amountdscale.get())
+        amounttransf = int(self.amounttrans.get())
+        # print pdf_file, dpi, typecvd, page, amountdalto, amounttransf
 
-        # pdf_file, dpi, png_file, typeCVD, amountDalto, amountTransf, list_pages=None
-        V6_1PDFColorMatrix.main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, page)
+        # pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file
+        newdirectory = V6_1PDFColorMatrix.main(pdf_file, dpi, typecvd, amountdalto, amounttransf, page)
+        tkMessageBox.showinfo("TESTE", "L'image teste se trouve a : " + str(newdirectory))
 
-
-
-
-
-
-
-
+"""
 class PageTwo(tk.Frame):  # create page two.
 
     def __init__(self, parent, controller):
@@ -232,7 +208,7 @@ class PageTwo(tk.Frame):  # create page two.
                             command=lambda: controller.show_frame(PageOne))
         button2.pack()
 
-
+"""
 
 app = SoManyColorsapp()
 app.mainloop()

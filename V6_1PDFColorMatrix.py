@@ -49,16 +49,22 @@ def renameImage(pages, jpg_file):
     :param pages: list of pages ( ex : [0, 2, 4] ) where 0 is the first page of the PDF.
     :param jpg_file: the directory where the PNG are stored.
     """
+    if len(pages) == 1:
+        # REPLACE 0 BY THE PDF'S PAGE NUMBER
+        name = jpg_file + '\im.png'
+        newName = name.replace('im', 'image-' + str(pages[0]))
+        # print name, newName
 
-    for nbr in range(len(pages)):
-        name = jpg_file + '\im-' + str(nbr) + '.png'
-        newName = name.replace('im-' + str(nbr), 'image-' + str(pages[nbr]))
+    else:
+        for nbr in range(len(pages)):
+            name = jpg_file + '\im-' + str(nbr) + '.png'
+            newName = name.replace('im-' + str(nbr), 'image-' + str(pages[nbr]))
 
-        pathexists(name)
+    pathexists(name)
 
-        os.rename(name, newName)
+    os.rename(name, newName)
 
-        pathexists(newName)
+    pathexists(newName)
     return
 
 
@@ -291,7 +297,7 @@ def setup(pdf_file, png_file):
     """
 
     pdf_m_name = path_leaf(pdf_file).replace('.pdf', '_m.pdf')
-    pdf_m_path = pdf_file.replace('\\' + path_leaf(pdf_file), '')
+    pdf_m_path = pdf_file.replace(path_leaf(pdf_file), '')
 
     if pdf_m_name in os.listdir(pdf_m_path):
         os.remove(pdf_m_path + '\\' + pdf_m_name)
@@ -358,7 +364,7 @@ def PDFProcess2PDF(png_file, page, dico_im_pdf, color_matrix):
     return dico_im_pdf
 
 
-def main(pdf_file, dpi, png_file, typeCVD, amountDalto, amountTransf, list_pages=None):
+def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file="C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir"):
     """
     VERSION 6.1:
     ----------
@@ -375,7 +381,8 @@ def main(pdf_file, dpi, png_file, typeCVD, amountDalto, amountTransf, list_pages
     :param list_pages: a list of pages (integer) to convert ( if list_pages == None, it means that all the PDF should
     be converted ).
     """
-
+    # print pdf_file, dpi, typeCVD, amountDalto, amountTransf
+    # print'ok'
     t1 = time.time()
     pathexists(pdf_file)
     pathexists(png_file)
@@ -455,9 +462,11 @@ def main(pdf_file, dpi, png_file, typeCVD, amountDalto, amountTransf, list_pages
     # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
 
     movePDF(pdf_file)
-    return
+    newDirectory = pdf_file.replace(path_leaf(pdf_file), '') + str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')
+    return newDirectory
 
 
-# pdf_file, dpi, png_file, typeCVD, amountDalto, amountTransf, list_pages=None
-main("D:\PDF_File\PDF_delta.pdf", 72, "D:\PDF_File\imagesPDF", "deuteranope_vision", 3, 1)
+# pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file
+#main("C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\PDFsrc\ishihara38.pdf", 72, "protanope_vision", 3, 2,
+ #    [1],"C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir")
 
