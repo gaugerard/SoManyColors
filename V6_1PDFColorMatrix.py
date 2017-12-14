@@ -25,6 +25,7 @@ def PDF2jpg(pdf_file, jpg_file, list_pages, dpi, ImageMagickConvert_file = 'D:\P
 
     stringDensity = ' -density ' + str(dpi) + ' '
 
+    # if list_pages is NONE, it converts all the pdf.
     if list_pages is None:
         call(ImageMagickConvert_file + stringDensity + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
         return
@@ -40,7 +41,6 @@ def PDF2jpg(pdf_file, jpg_file, list_pages, dpi, ImageMagickConvert_file = 'D:\P
         # RENAME THE IMAGE WITH THE CORRECT PAGES THEY REPRESENTS
         renameImage(pages, jpg_file)
         return
-
 
 def renameImage(pages, jpg_file):
     """
@@ -268,13 +268,11 @@ def movePDF(pdf_file):
     """
     Moves a pdf from the current directory ( where the PDF is created by the program )  to the directory where the src
     PDF was taken from.
-
     (
     exe :
     src PDF = PDF_delta.pdf       in directory 'C\pdf'
     dest PDF = PDF_delta_m.pdf    in directory 'C\pdf'
     )
-
     :param pdf_file: the directory of the source PDF.
     """
 
@@ -282,6 +280,8 @@ def movePDF(pdf_file):
     current_dir = os.getcwd() + '\\' + pdf_name                    # ( exe : current directory of the PDF_delta_m.pdf )
     final_dir = pdf_file.replace('.pdf', '_m.pdf')                 # ( exe : directory of PDF_delta.pdf )
 
+    print "current dir : ", current_dir
+    print "final dir : ", final_dir
     pathexists(current_dir)
     os.rename(current_dir, final_dir)
     pathexists(final_dir)
@@ -381,9 +381,11 @@ def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png
     :param list_pages: a list of pages (integer) to convert ( if list_pages == None, it means that all the PDF should
     be converted ).
     """
+
     # print pdf_file, dpi, typeCVD, amountDalto, amountTransf
     # print'ok'
     t1 = time.time()
+    print pdf_file
     pathexists(pdf_file)
     pathexists(png_file)
 
@@ -467,5 +469,9 @@ def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png
 
 
 # pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file
-# main("D:\PDF_File\PDF_delta.pdf", 300, "protanope_vision", 3, 2)
 
+#pdfs = ['D:\PDF_File\PDF_beta.pdf', 'D:\PDF_File\PDF_charlie.pdf', 'D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\PDF_alpha.pdf']
+#for e in pdfs:
+#    main(e, 72, "protanope_vision", 3, 2)
+
+# main("D:\PDF_File\PDF_delta.pdf", 72, "protanope_vision", 3, 2)

@@ -132,9 +132,10 @@ def movePDF(pdf_file):
     )
     :param pdf_file: the directory of the source PDF
     """
-    pdf_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # ( exe : PDF_delta.pdf --> PDF_delta_m.pdf )
-    current_dir = os.getcwd() + '\\' + pdf_name  # ( exe : current directory of the PDF_delta_m.pdf )
-    final_dir = pdf_file.replace('.pdf', '_m.pdf')  # ( exe : directory of PDF_delta.pdf )
+
+    pdf_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')       # ( exe : PDF_delta.pdf --> PDF_delta_m.pdf )
+    current_dir = os.getcwd() + '\\' + pdf_name                         # ( exe : current directory of the PDF_delta_m.pdf )
+    final_dir = pdf_file.replace('.pdf', '_m.pdf')                      # ( exe : directory of PDF_delta.pdf )
 
     # print 'Created PDF src path : ', current_dir
     # print 'PDF destination path : ', final_dir
@@ -277,5 +278,5 @@ def main(pdf_file, color_blind_filter, dpi, png_file):
 # main('C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\PDFsrc.gitignore\ML_12_clustering_slides_300dpi.pdf', (0, 100, 0), 'C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir.gitignore')
 # main('D:\Cours2017-2018Q1\RESEAU\chapitre_02_Cryptography_Basics.pdf', (10, 25, 80), 'D:\PDF_File\imagesPDF')
 # main('D:\PDF_File\intro_prog_01_introduction_slides.pdf',  (30, 10, 80), 'D:\PDF_File\imagesPDF')
-# main('D:\PDF_File\PDF_charlie.pdf',  (30, 10, 80), 150, 'D:\PDF_File\imagesPDF')
+main('D:\PDF_File\PDF_delta.pdf',  (30, 10, 80), 150, 'D:\PDF_File\imagesPDF')
 # PDF2jpg('D:\PDF_File\intro_prog_01_introduction_slides.pdf', 'D:\PDF_File\imagesPDF')
