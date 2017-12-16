@@ -1,3 +1,4 @@
+
 import os
 from PIL import Image
 import imghdr
@@ -6,12 +7,82 @@ import ntpath
 from subprocess import call
 import os.path
 import time
+from threading import Thread
+import time
+
+def PDF2jpg(pdf_file, jpg_file, list_pages, dpi, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
+    """
+    Converts each page of a PDF into png and saves them in jpg_file directory.
+
+    -density 300 = will set the dpi to 300.
+    -quality 100 = will set the compression to 100 for PNG, JPG and MIFF file format ( 100 means NO compresion ).
+
+    :param pdf_file: the pdf source's directory.
+    :param jpg_file: the file of destination.
+    :param list_pages: a list of pages (integer) to convert. ( exe : [1, 3, 10 ,45, 46, 47, 100] ).
+    :param dpi: the dpi of each image.
+    :param ImageMagickConvert_file: the directory where ImageMagick\convert is located.
+    """
+
+    stringDensity = ' -density ' + str(dpi) + ' '
+
+    # if list_pages is NONE, it converts all the pdf.
+    if list_pages is None:
+        call(ImageMagickConvert_file + stringDensity + pdf_file + ' -quality 100 ' + jpg_file + '\image.png')
+        return
+
+    if len(list_pages) >= 1:
+        pages = []
+        for page in list_pages:
+            pages.append(page - 1)
+
+        liste = str(pages).replace(' ', '')
+        call(ImageMagickConvert_file + stringDensity + pdf_file + liste + ' -quality 100 ' + jpg_file + '\im.png')
+
+        # RENAME THE IMAGE WITH THE CORRECT PAGES THEY REPRESENTS
+        renameImage(pages, jpg_file)
+        return
+
+def renameImage(pages, jpg_file):
+    """
+    Renames the produced PNG with the correct name ( its page number ).
+
+    :param pages: list of pages ( ex : [0, 2, 4] ) where 0 is the first page of the PDF.
+    :param jpg_file: the directory where the PNG are stored.
+    """
+    if len(pages) == 1:
+        # REPLACE 0 BY THE PDF'S PAGE NUMBER
+        name = jpg_file + '\im.png'
+        newName = name.replace('im', 'image-' + str(pages[0]))
+        # print name, newName
+
+    else:
+        for nbr in range(len(pages)):
+            name = jpg_file + '\im-' + str(nbr) + '.png'
+            newName = name.replace('im-' + str(nbr), 'image-' + str(pages[nbr]))
+
+    pathexists(name)
+
+    os.rename(name, newName)
+
+    pathexists(newName)
+    return
+
 
 # Based on visionary-be/visionary-anderton
 # https://github.com/visionary-be/visionary-anderton/blob/master/src/assets/js/contentscript/mutagen.js
 
 
 def defineSVGMatrix(typeCVD, amountDalto, amountTransf):
+    """
+    Creates the color-matrix according to the given arguments.
+
+    :param typeCVD: the type of colorblindness (typeCVD = "normal_vision", "protanope_vision",
+    "deuteranope_vision", "tritanope_vision").
+    :param amountDalto: the severity of colorblindness.
+    :param amountTransf: the severity of the transformation.
+    :return colorMatrix: the created color-matrix.
+    """
 
     CVDMatrix = {}
 
@@ -77,25 +148,18 @@ def defineSVGMatrix(typeCVD, amountDalto, amountTransf):
     return colorMatrix
 
 
-def path_leaf(path):
-    """
-    :param path: a directory ( exe : 'C\User\Program\Images\image1.png' )
-    :return tail : the tail of the path ( exe : 'image1.png' )
-    """
-    head, tail = ntpath.split(path)
-    return tail or ntpath.basename(head)
-
-
-def colorMatrixFilter(image, matrix, num):
+def colorMatrixFilter(image, matrix, png_file):
     """
     Modifies the pixels of an image according to a color matrix.
+
     :param image: the directory where the image is saved.
     :param matrix: a color matrix.
+    :param png_file: the file where the modified image will be saved.
     :return modified_image: the image modified.
     """
+
     im = Image.open(image)
 
-    # INFORMATION :
     width = im.size[0]  # size in pixels
     height = im.size[1]
     imtype = imghdr.what(image)
@@ -116,22 +180,312 @@ def colorMatrixFilter(image, matrix, num):
             im.putpixel((x, y), (r2, g2, b2))
 
     name = path_leaf(image)
-    modified_name = (name.replace("." + imtype.lower(), "")) + '_m' + str(num) + '.' + (imtype.lower())  # name without the type
-    directory = image.replace(name, modified_name)
+    modified_name = (name.replace("." + imtype.lower(), "")) + '_m.' + (imtype.lower())  # name without the type
+    directory = png_file + "\\" + modified_name
     im.save(directory)
     im.close()
 
     return modified_name
 
 
-def test(image, vision_type, amount1, amount2, num):
-    matrix = defineSVGMatrix(vision_type, amount1, amount2)
-    colorMatrixFilter(image, matrix, num)
+def change2pdf(png_file, jpeg_name, type_im):
+    """
+    Changes a the png ( jpeg_name ) in the file (png_file) into a pdf file.
+
+    :param png_file: the directory where the image is saved ( exe : D:\Users\Images ).
+    :param jpeg_name: name of the specific image to process ( exe : 'image1.png' ).
+    :param type_im: the type of the image ( here it is '.png' ).
+    :return pdf_name: the name of the PDF that has been created from the png.
+    """
+
+    filename = png_file + '\\' + str(jpeg_name)
+    pathexists(filename)
+    im = Image.open(filename)
+
+    if im.mode == "RGBA":
+        im = im.convert("RGB")
+
+    pdf_name = jpeg_name.replace('.' + type_im, '.pdf')
+    new_filename = png_file + '\\' + pdf_name
+
+    if not os.path.exists(new_filename):
+        im.save(new_filename, "pdf", density='300x300')
+
+    im.close()
+    return pdf_name
 
 
-type_vison = ["normal_vision", "protanope_vision", "deuteranope_vision", "tritanope_vision"]
-num = 0
-for vision in type_vison:
-    test("D:\PDF_File\imagesPDF\Capture.png", vision, 10, 1, num)
-    num += 1
-    time.sleep(1)
+def mergePDFFUll(pdf_file, png_file, dico_im_pdf):
+    """
+    Merges every PDF of a file into a single bigger PDF.
+
+    :param pdf_file: the directory where the PDF is saved.
+    :param png_file: the directory where the png from the PDF are saved.
+    :param dico_im_pdf: a dictionary which contains all the name of the PDFs that needs to be merged.
+    """
+
+    pdf_m_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # exe : PDF_delta.pdf --> PDF_delta_m.pdf
+    merger = PdfFileMerger()
+
+    for num in range(dico_im_pdf['nbr_pages']):
+        if (dico_im_pdf[num] in os.listdir(png_file)) and ((dico_im_pdf[num]).endswith('.pdf')):
+
+                merger.append(png_file + '\\' + dico_im_pdf[num])
+                del dico_im_pdf[num]
+
+    merger.write(pdf_m_name)
+    merger.close()
+    return
+
+
+def mergePDFList(png_file, dico_im_pdf, page, merger):
+    """
+    Merges a PDF with another PDF.
+
+    :param png_file: the directory where the png from the PDF are saved.
+    :param dico_im_pdf: a dictionary which contains all the name of the PDFs that needs to be merged.
+    :param page: the number of the page we will merge.
+    :param merger: the merger object that allows the merging of PDFs.
+    """
+
+    if (dico_im_pdf[page] in os.listdir(png_file)) and ((dico_im_pdf[page]).endswith('.pdf')):
+            merger.append(png_file + '\\' + dico_im_pdf[page])
+            del dico_im_pdf[page]
+
+
+def path_leaf(path):
+    """
+    Gives the name at the end of a directory.
+
+    :param path: a directory ( exe : 'C\User\Program\Images\image1.png' ).
+    :return tail : the tail of the path ( exe : 'image1.png' ).
+    """
+
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
+
+
+def movePDF(pdf_file):
+    """
+    Moves a pdf from the current directory ( where the PDF is created by the program )  to the directory where the src
+    PDF was taken from.
+    (
+    exe :
+    src PDF = PDF_delta.pdf       in directory 'C\pdf'
+    dest PDF = PDF_delta_m.pdf    in directory 'C\pdf'
+    )
+    :param pdf_file: the directory of the source PDF.
+    """
+
+    pdf_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # ( exe : PDF_delta.pdf --> PDF_delta_m.pdf )
+    current_dir = os.getcwd() + '\\' + pdf_name                    # ( exe : current directory of the PDF_delta_m.pdf )
+    final_dir = pdf_file.replace('.pdf', '_m.pdf')                 # ( exe : directory of PDF_delta.pdf )
+
+    # print "current dir : ", current_dir
+    # print "final dir : ", final_dir
+    pathexists(current_dir)
+    os.rename(current_dir, final_dir)
+    pathexists(final_dir)
+    return
+
+
+def setup(pdf_file, png_file):
+    """
+    Deletes the PDF on the png_file path.
+
+    :param pdf_file: the path where the pdf is stored.
+    :param png_file: the path where the images and pdf will be manipulated by the program.
+    """
+
+    pdf_m_name = path_leaf(pdf_file).replace('.pdf', '_m.pdf')
+    pdf_m_path = pdf_file.replace(path_leaf(pdf_file), '')
+
+    if pdf_m_name in os.listdir(pdf_m_path):
+        os.remove(pdf_m_path + '\\' + pdf_m_name)
+
+    current_dir = os.getcwd()
+    if pdf_m_name in os.listdir(current_dir):
+        os.remove(current_dir + '\\' + pdf_m_name)
+
+    for image in os.listdir(png_file):
+        if image.endswith('.pdf') or image.endswith('.png'):
+            os.remove(png_file + '\\' + image)
+    return
+
+
+def pathexists(path):
+    """
+    Checks if a path to a directory exists or not.
+
+    :param path: the directory we want to check.
+    :return: True if path exists, else False.
+    """
+
+    if not os.path.exists(path):
+        raise Exception('NotExistingPathException')
+
+    return True
+
+
+def PDFProcess2PDF(png_file, page, dico_im_pdf, color_matrix):
+    """
+    Create a new pdf for a selected page of a src PDF ( ONLY ONE PAGE ).
+
+    :param png_file: file where all the created .png will be saved.
+    :param page: a page we want to process ( INTEGER ), ( exe :  page = 1 --> image-0.png ).
+    :param dico_im_pdf: a dictionary that holds all pdf images name.
+    :param color_matrix: a color_matrix used to modify the color of an image.
+    :return dico_im_pdf: a dictionary that holds all the pdf images name.
+    """
+
+    # TEST IF IT IS A PNG OR NOT AND THEN CONVERT ITS COLOR
+
+    liste_im_m = []  # list of modified images ( will be completed after the FOR )
+    im_name = 'image-' + str(page-1) + '.png'
+    num = page
+    if im_name in os.listdir(png_file):
+        if im_name.endswith('.png'):
+            image = png_file + "\\" + str(im_name)
+            liste_im_m.append(colorMatrixFilter(image, color_matrix, png_file))
+            dico_im_pdf[num] = ''
+
+    # CHANGES .png INTO .pdf
+
+    image_m = 'image-' + str(page-1) + '_m.png'
+    direct_name = png_file + '\\' + image_m
+    type_im_m = imghdr.what(direct_name)
+    dico_im_pdf[num] = (change2pdf(png_file, image_m, type_im_m))
+
+    # DELETES THE .png SINCE WE DON'T NEED THEM ANYMORE
+
+    png = 'image-' + str(page-1) + '.png'
+    if png.endswith('.png'):
+        os.remove(png_file + '\\' + png)
+
+    return dico_im_pdf
+
+
+def conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file="C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir"):
+    """
+    VERSION 6.1:
+    ----------
+    Creates a new pdf from an entire pdf or a selection of pages. It applies a color-matrix on every page of the pdf to
+    make it readable for a specific colorblind type.
+
+    :param list_pdf: a list of directories which correspond to the pdfs that you want to convert into .png.
+    :param dpi: the dpi of each image.
+    :param png_file: file where all the created .png will be saved.
+    :param typeCVD: the type of colorblindness (typeCVD = "normal_vision", "protanope_vision",
+    "deuteranope_vision", "tritanope_vision").
+    :param amountDalto: the severity of colorblindness ( integer / float ).
+    :param amountTransf: the severity of the transformation( integer / float ).
+    :param list_pages: a list of pages (integer) to convert ( if list_pages == None, it means that all the PDF should
+    be converted ).
+    """
+
+    print "<<<      DEBUT " + str(pdf_file) + "     >>>"
+    # print pdf_file, dpi, typeCVD, amountDalto, amountTransf
+    # print'ok'
+    t1 = time.time()
+    # print pdf_file
+    pathexists(pdf_file)
+    pathexists(png_file)
+
+    # CLEANS THE DIRECTORY WHERE .png WILL BE MANIPULATED
+    setup(pdf_file, png_file)
+
+    # CREATES PNG OUT OF A PDF
+    PDF2jpg(pdf_file, png_file, list_pages, dpi)
+
+    # ----------------------------------------------------------
+    # TEST IF IT IS A PNG OR NOT AND THEN CONVERT ITS COLOR:
+
+    liste_im_m = []  # list of modified images ( will be completed after the FOR )
+    dico_im_pdf = {}
+
+    # CREATES COLOR_MATRIX WITH THE INFO GIVEN BY THE USER
+    color_matrix = defineSVGMatrix(typeCVD, amountDalto, amountTransf)
+
+    # ----------------------------------------------------------
+    # CHANGES .png INTO .pdf:
+
+    if list_pages is None:
+        num = 0
+        for element in os.listdir(png_file):
+            if element.endswith('.png'):
+                image = png_file + "\\" + str(element)
+                liste_im_m.append(colorMatrixFilter(image, color_matrix, png_file))
+                dico_im_pdf[num] = ''
+                num = num + 1
+
+        dico_im_pdf['nbr_pages'] = num
+
+        for num in range(dico_im_pdf['nbr_pages']):
+            image_m = 'image-' + str((num)) + '_m.png'
+            direct_name = png_file + '\\' + image_m
+            type_im_m = imghdr.what(direct_name)
+            dico_im_pdf[num] = (change2pdf(png_file, image_m, type_im_m))
+
+        # ----------------------------------------------------------
+        # DELETES THE .png SINCE WE DON'T NEED THEM ANYMORE:
+
+        for png in os.listdir(png_file):
+            if png.endswith('.png'):
+                os.remove(png_file + '\\' + png)
+
+        mergePDFFUll(pdf_file, png_file, dico_im_pdf)
+
+    else:
+        for page in list_pages:
+            dico_im_pdf = PDFProcess2PDF(png_file, page, dico_im_pdf, color_matrix)
+
+        # ----------------------------------------------------------
+        # DELETES THE .png SINCE WE DON'T NEED THEM ANYMORE:
+
+        for png in os.listdir(png_file):
+            if png.endswith('.png'):
+                os.remove(png_file + '\\' + png)
+
+        # MERGES THE PDF
+        pdf_m_name = str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')  # exe : PDF_delta.pdf --> PDF_delta_m.pdf
+        merger = PdfFileMerger()
+
+        for page in list_pages:
+            mergePDFList(png_file, dico_im_pdf, page, merger)
+
+        merger.write(pdf_m_name)
+        merger.close()
+
+    # ----------------------------------------------------------
+    # MERGES THE PDF:
+
+    t2 = time.time()
+
+    # ----------------------------------------------------------
+    # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
+
+    movePDF(pdf_file)
+    newDirectory = pdf_file.replace(path_leaf(pdf_file), '') + str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')
+    print "TIME : " + str(t2 - t1)
+    print "<<<      LE FICHIER SE TROUVE A : " + str(newDirectory) + "      >>>"
+
+
+def main(list_pdf, list_pages, dpi, typeCVD, amountDalto, amountTransf, page=None, png_file="C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir"):
+
+    print " main ", list_pdf
+    print list_pages
+
+    for i in range(len(list_pdf)):
+        pdf_file = list_pdf[i]
+        pages = list_pages[i]
+        if pages == 1:
+            page = [1]
+            print " OPTION || " + str(pdf_file) +" "+ str(page)
+            conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, page, png_file)
+        else:
+            page = None
+            print " OPTION || " + str(pdf_file) +" " + str(page)
+
+            conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, page, png_file)
+
+    print "PROCESSUS DE CONVERSION TERMINE."

@@ -7,7 +7,8 @@ import ntpath
 from subprocess import call
 import os.path
 import time
-
+from threading import Thread
+import time
 
 def PDF2jpg(pdf_file, jpg_file, list_pages, dpi, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
@@ -280,8 +281,8 @@ def movePDF(pdf_file):
     current_dir = os.getcwd() + '\\' + pdf_name                    # ( exe : current directory of the PDF_delta_m.pdf )
     final_dir = pdf_file.replace('.pdf', '_m.pdf')                 # ( exe : directory of PDF_delta.pdf )
 
-    print "current dir : ", current_dir
-    print "final dir : ", final_dir
+    # print "current dir : ", current_dir
+    # print "final dir : ", final_dir
     pathexists(current_dir)
     os.rename(current_dir, final_dir)
     pathexists(final_dir)
@@ -381,11 +382,11 @@ def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png
     :param list_pages: a list of pages (integer) to convert ( if list_pages == None, it means that all the PDF should
     be converted ).
     """
-
+    print "<<<      DEBUT     >>>"
     # print pdf_file, dpi, typeCVD, amountDalto, amountTransf
     # print'ok'
     t1 = time.time()
-    print pdf_file
+    # print pdf_file
     pathexists(pdf_file)
     pathexists(png_file)
 
@@ -458,14 +459,18 @@ def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png
     # MERGES THE PDF:
 
     t2 = time.time()
-    print ('Time taken to process the PDF : ', t2 - t1)
 
     # ----------------------------------------------------------
     # MOVES THE NEW PDF IN THE PDF, THAT WE WANT TO MODIFY, DIRECTORY
 
     movePDF(pdf_file)
     newDirectory = pdf_file.replace(path_leaf(pdf_file), '') + str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')
+    print "<<<      LE FICHIER SE TROUVE A : " + str(newDirectory) + "      >>>"
     return newDirectory
+
+
+
+
 
 
 # pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file
