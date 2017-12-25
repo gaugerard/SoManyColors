@@ -9,8 +9,17 @@ from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfpage import PDFPage
 from threading import Thread
 import QueuePDF
+import logging
 
 LARGE_FONT = ("Verdana", 12)
+
+
+class globalBS():
+
+    def __init__(self):
+        self.isFree = True
+        self.progress = 0
+
 
 class SoManyColorsapp(tk.Tk):
 
@@ -20,9 +29,17 @@ class SoManyColorsapp(tk.Tk):
         tk.Tk.wm_title(self, "SoManycolors")
         tk.Tk.wm_geometry(self, "900x900")
 
+        # create and configure logger
+        LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s"
+        logging.basicConfig(filename="GUI.Log",
+                            level=logging.INFO,  # .DEBUG
+                            format=LOG_FORMAT,
+                            filemode='w')
+        self.logger = logging.getLogger()
+
+        self.logger.info("App is created.")
 
         container = tk.Frame(self)
-        container.config(bg="white")
 
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
@@ -54,6 +71,8 @@ class Menu(tk.Frame):  # create start page.
 
         self.controller = controller
 
+        controller.logger.info("Menu is created.")
+
         # VARIABLES
         self.dpiscale = tk.IntVar()
         self.pagescale = tk.IntVar()
@@ -61,6 +80,7 @@ class Menu(tk.Frame):  # create start page.
         self.amounttscale = tk.IntVar()
         self.daltotype = tk.StringVar()
         self.Queue = QueuePDF.PDFQueue()
+        self.Global = globalBS()
 
         self.dpiscale.set(72)
         self.pagescale.set(1)
@@ -143,21 +163,27 @@ class Menu(tk.Frame):  # create start page.
 
     def reomvepdf(self):
 
+        self.controller.logger.info("removepdf is called.")
+
         if self.Queue.size > 0:
 
             self.Queue.remove_pdf()
-            # print self.Queue.queue
 
             pdfs = ""
             for e in range(len(self.Queue.queue)):
                 pdfs += str(self.Queue.queue[e]) + "\n"
 
             self.label = tk.Label(self, text=str(pdfs),  width=70,height=10, borderwidth=1, relief="groove",font=("Verdana", 8, "bold"), fg="dark slate gray").place(x=260, y=180)
+            self.controller.logger.info("a pdf has been removed.")
 
         else:
-            tkMessageBox.showinfo("ERROR", "Il n'y a pas de PDF")
+            tkMessageBox.showinfo("ERROR", "Il n'y a pas de PDF.")
+            self.controller.logger.info("no pdf in queue.")
 
     def addpdf(self):
+
+        self.controller.logger.info("addpdf is called.")
+
         filename = tkFileDialog.askopenfilename(initialdir="/", title="Select file",filetypes=(("pdf files", "*.pdf"), ("all files", "*.*")))
         fp = open(str(filename), 'rb')
         parser = PDFParser(fp)
@@ -177,65 +203,92 @@ class Menu(tk.Frame):  # create start page.
         for e in range(len(self.Queue.queue)):
             pdfs += str(self.Queue.queue[e]) + "\n"
 
-        self.label = tk.Label(self, text=str(pdfs), width=70,height=10, borderwidth=1, relief="groove", font=("Verdana", 8, "bold"), fg="dark slate gray").place(x=260, y=180)
+        self.label = tk.Label(self, text=str(pdfs), width=70, height=10, borderwidth=1, relief="groove", font=("Verdana", 8, "bold"), fg="dark slate gray").place(x=260, y=180)
+
+        self.controller.logger.info("a pdf has been added.")
 
     def lancerconversion(self):
 
-        dpi = self.dpiscale.get()
-        typecvd = self.daltotype.get()
-        amountdalto = self.amountdscale.get()
-        amounttransf = self.amounttscale.get()
+        self.controller.logger.info("lancerconversion is called.")
 
-        if self.Queue.size > 0:
-            self.converter(dpi, typecvd, amountdalto, amounttransf)
+        if self.Global.isFree:
+
+            self.controller.logger.info("the convertor is free.")
+
+            dpi = self.dpiscale.get()
+            typecvd = self.daltotype.get()
+            amountdalto = self.amountdscale.get()
+            amounttransf = self.amounttscale.get()
+
+            if self.Queue.size > 0:
+                self.Global.isFree = False
+                self.converter(False, dpi, typecvd, amountdalto, amounttransf)
+
+            else:
+
+                tkMessageBox.showinfo("ERROR", "Il n'y a pas de PDF.")
 
         else:
-
-            tkMessageBox.showinfo("ERROR", "Il n'y a pas de PDF")
+            tkMessageBox.showinfo("ERROR", "CONVERSION DEJA EN COURS.")
 
     def lancertest(self):
 
-        dpi = self.dpiscale.get()
-        typecvd = self.daltotype.get()
-        amountdalto = self.amountdscale.get()
-        amounttransf = self.amounttscale.get()
-        page = []
-        page.append(self.pagescale.get())
+        self.controller.logger.info("lancertest is called.")
 
-        if self.Queue.size > 0:
-            self.converter(dpi, typecvd, amountdalto, amounttransf, page)
+        if self.Global.isFree:
+
+            self.controller.logger.info("the convertor is free.")
+
+            dpi = self.dpiscale.get()
+            typecvd = self.daltotype.get()
+            amountdalto = self.amountdscale.get()
+            amounttransf = self.amounttscale.get()
+            page = self.pagescale.get()
+
+            if self.Queue.size > 0:
+                self.Global.isFree = False
+                self.converter(True, dpi, typecvd, amountdalto, amounttransf, page)
+
+            else:
+
+                tkMessageBox.showinfo("ERROR", "Il n'y a pas de PDF.")
 
         else:
+            tkMessageBox.showinfo("ERROR", "CONVERSION DEJA EN COURS.")
 
-            tkMessageBox.showinfo("ERROR", "Il n'y a pas de PDF")
+    def converter(self, test, dpi, typecvd, amountdalto, amounttransf, page=None):
 
-    def converter(self, dpi, typecvd, amountdalto, amounttransf, page=None):
+        self.controller.logger.info("converter is called.")
 
         if page is None:
+
+            self.controller.logger.info("this is a full conversion.")
+
             list_pdf = self.Queue.queue
             list_pages = self.Queue.queue_pdf_page
-            print "converter ",list_pdf
             self.Queue.full_remove()
-            thread_conversion = Thread(target=V6_2ListPDFColorMatrix.main, args=(list_pdf, list_pages, dpi, typecvd, amountdalto, amounttransf))
+            thread_conversion = Thread(target=V6_2ListPDFColorMatrix.main, args=(self.Global, test, list_pdf, list_pages, dpi, typecvd, amountdalto, amounttransf))
             thread_conversion.start()
             self.label = tk.Label(self, text="", width=70, height=10, borderwidth=1, relief="groove",font=("Verdana", 8, "bold"), fg="dark slate gray").place(x=260, y=180)
-            self.calcultemps()
 
             pdfs = ""
             for e in range(len(list_pdf)):
                 pdfs += str(list_pdf[e]) + "\n"
             self.label = tk.Label(self, text=str(pdfs), width=90, height=6, borderwidth=1, relief="groove",font=("Verdana", 8, "bold"), fg="dark slate gray").place(x=100, y=740)
 
-        else :
+        else:
+
+            self.controller.logger.info("this is a test conversion.")
+
             list_pdf = []
             list_pdf.append(self.Queue.queue[0])
-            print "contest ", list_pdf
             list_pages = self.Queue.queue_pdf_page
-            # print list_pdf
-            thread_conversion = Thread(target=V6_2ListPDFColorMatrix.main, args=(list_pdf, list_pages, dpi, typecvd, amountdalto, amounttransf, page))
+            thread_conversion = Thread(target=V6_2ListPDFColorMatrix.main, args=(self.Global, test, list_pdf, list_pages, dpi, typecvd, amountdalto, amounttransf, page))
             thread_conversion.start()
 
     def calcultemps(self):
+
+        self.controller.logger.info("calcultemps is called.")
 
         dpi = self.dpiscale.get()
         if dpi//72 == 1:
@@ -263,9 +316,9 @@ class Menu_conversion(tk.Frame):  # create page two.
 
 
 def main():
+
     app = SoManyColorsapp()
     app.mainloop()
-
 
 
 if __name__ == '__main__':

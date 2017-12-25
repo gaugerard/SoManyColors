@@ -1,7 +1,7 @@
 import threading
 import V6_2ListPDFColorMatrix
-
-
+#from thread import start_new_thread, allocate_lock
+# self.lock = allocate_lock()
 class PDFQueue():
 
     def __init__(self):
@@ -12,8 +12,9 @@ class PDFQueue():
         self.last_page_added = 0
         self.QLock = threading.Lock()
 
+
     def add_pdf(self, element, pages):
-        # print "Adding pdf : " + str(element)
+        print "Adding pdf : " + str(element)
         self.QLock.acquire()
         self.queue.append(element)
         self.queue_pdf_page.append(pages)
@@ -21,18 +22,18 @@ class PDFQueue():
         self.nbr_page += pages
         self.last_page_added = pages
 
-        # print "Adding pdf : " + str(element) + " is done"
+        print "Adding pdf : " + str(element) + " is done"
         self.QLock.release()
 
     def remove_pdf(self):
-        # print "Removing last element"
+        print "Removing last element"
         self.QLock.acquire()
         if self.size > 0:
             del self.queue[self.size - 1]
             del self.queue_pdf_page[self.size -1]
             self.size -= 1
             self.nbr_page -= self.last_page_added
-        # print "Removing is done"
+        print "Removing is done"
         self.QLock.release()
 
     def process_pdf(self, dpi, typecvd, amountdalto, amounttransf, page=None):
@@ -48,6 +49,15 @@ class PDFQueue():
         self.last_page_added = 0
         self.nbr_page = 0
         # print "Processing element : " + str(self.queue) + " is done"
+        self.QLock.release()
+
+    def process_one_pdf(self, Global, dpi, typecvd, amountdalto, amounttransf):
+        self.QLock.acquire()
+        v6_3.main(Global, self.queue[0], self.queue_pdf_page[0], dpi, typecvd, amountdalto, amounttransf)
+        self.size -= 1
+        self.nbr_page -= self.queue_pdf_page[0]
+        del self.queue[0]
+        del self.queue_pdf_page[0]
         self.QLock.release()
 
     def queue_state(self):

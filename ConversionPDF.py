@@ -10,6 +10,7 @@ import time
 from threading import Thread
 import time
 
+
 def PDF2jpg(pdf_file, jpg_file, list_pages, dpi, ImageMagickConvert_file = 'D:\ProgrammePDF\ImageMagick-6.4.7-Q16\convert'):
     """
     Converts each page of a PDF into png and saves them in jpg_file directory.
@@ -365,14 +366,14 @@ def PDFProcess2PDF(png_file, page, dico_im_pdf, color_matrix):
     return dico_im_pdf
 
 
-def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file="C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir"):
+def conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file="C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir"):
     """
     VERSION 6.1:
     ----------
     Creates a new pdf from an entire pdf or a selection of pages. It applies a color-matrix on every page of the pdf to
     make it readable for a specific colorblind type.
 
-    :param pdf_file: the directory of the pdf that you want to convert into .png.
+    :param list_pdf: a list of directories which correspond to the pdfs that you want to convert into .png.
     :param dpi: the dpi of each image.
     :param png_file: file where all the created .png will be saved.
     :param typeCVD: the type of colorblindness (typeCVD = "normal_vision", "protanope_vision",
@@ -382,7 +383,8 @@ def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png
     :param list_pages: a list of pages (integer) to convert ( if list_pages == None, it means that all the PDF should
     be converted ).
     """
-    print "<<<      DEBUT     >>>"
+
+    print "<<<      DEBUT " + str(pdf_file) + "     >>>"
     # print pdf_file, dpi, typeCVD, amountDalto, amountTransf
     # print'ok'
     t1 = time.time()
@@ -465,18 +467,25 @@ def main(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png
 
     movePDF(pdf_file)
     newDirectory = pdf_file.replace(path_leaf(pdf_file), '') + str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')
+    print "TIME : " + str(t2 - t1)
     print "<<<      LE FICHIER SE TROUVE A : " + str(newDirectory) + "      >>>"
-    return newDirectory
 
 
+def main(list_pdf, list_pages, dpi, typeCVD, amountDalto, amountTransf, page=None, png_file="C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir"):
 
+    print " main ", list_pdf
+    print list_pages
 
+    for i in range(len(list_pdf)):
+        pdf_file = list_pdf[i]
+        pages = list_pages[i]
 
+        if pages == 1:
+            page = [1]
+            conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, page, png_file)
 
-# pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_pages=None, png_file
+        else:
+            page = None
+            conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, page, png_file)
 
-#pdfs = ['D:\PDF_File\PDF_beta.pdf', 'D:\PDF_File\PDF_charlie.pdf', 'D:\PDF_File\PDF_delta.pdf', 'D:\PDF_File\PDF_alpha.pdf']
-#for e in pdfs:
-#    main(e, 72, "protanope_vision", 3, 2)
-
-# main("D:\PDF_File\PDF_delta.pdf", 72, "protanope_vision", 3, 2)
+    print "PROCESSUS DE CONVERSION TERMINE."
