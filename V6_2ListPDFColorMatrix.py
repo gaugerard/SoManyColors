@@ -355,13 +355,14 @@ def PDFProcess2PDF(png_file, page, dico_im_pdf, color_matrix):
     return dico_im_pdf
 
 
-def conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_page, png_file):
+def conversion(Global, pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_page, png_file):
     """
     VERSION 6.2:
     ------------
     Creates a new pdf from an entire pdf or does a test of the color filter on a page ( list_page ).
     It applies a color-matrix on every page of the pdf to make it readable for a specific colorblind type.
 
+    :param Global: a Global variable that contains important informations about the process.
     :param pdf_file: directory of the pdf to be converted. ( ex : "C:/desktop/documents/PDF_alpha.pdf" )
     :param dpi: the dpi of each image ( 72 = low resolution, 300 = high resolution ).
     :param typeCVD: the type of colorblindness (typeCVD = "normal_vision", "protanope_vision",
@@ -373,7 +374,7 @@ def conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_page, png
     :param png_file: directory where all the created .png will be saved.
     """
 
-    print "<<<      DEBUT " + str(pdf_file) + "     >>>"
+    Global.addLogMsg("<<<DEBUT " + str(pdf_file) + " >>>")
 
     t1 = time.time()
     pathexists(pdf_file)
@@ -447,8 +448,8 @@ def conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, list_page, png
     movePDF(pdf_file)
     newDirectory = pdf_file.replace(path_leaf(pdf_file), '') + str(path_leaf(pdf_file)).replace('.pdf', '_m.pdf')
 
-    print "TIME : " + str(t2 - t1)
-    print "<<<      LE FICHIER SE TROUVE A : " + str(newDirectory) + "      >>>"
+    Global.addLogMsg("TIME : " + str(t2 - t1))
+    Global.addLogMsg("<<< LE FICHIER SE TROUVE A : " + str(newDirectory) + " >>>")
 
 
 def main(Global, test, list_pdf, list_pages, dpi, typeCVD, amountDalto, amountTransf, page=None, png_file="C:\Users\gauth\PycharmProjects\untitled\pdf\SoManyColors\TraitementDir"):
@@ -481,28 +482,61 @@ def main(Global, test, list_pdf, list_pages, dpi, typeCVD, amountDalto, amountTr
     :param png_file: the file where the process of conversion will take place.
     """
 
-    print " main ", list_pdf
-    print list_pages
-
     if not test:
+
+        Global.page_left = 0
+        Global.log = []
+        Global.pdf = list_pdf
         Global.progress = 0
+
+        for p in list_pages:
+            Global.page_left += p
         for i in range(len(list_pdf)):
+
+            Global.addLogMsg("CONVERSION EN COURS : " + str(list_pdf[i]))
+
             pdf_file = list_pdf[i]
             pages = list_pages[i]
 
+            while Global.timeout:
+                iteration = 0
+                time.sleep(2)
+                Global.addLogMsg("EN PAUSE")
+                iteration += 1
+                if iteration > 100:
+                    Global.pdf = []
+                    Global.isFree = True
+                    Global.abort = False
+                    Global.timeout = False
+                    return
+
+            if Global.abort:
+                Global.addLogMsg("ARRET TOTAL DE LA CONVERSION.")
+                Global.abort = False
+                Global.isFree = True
+                Global.addLogMsg("PRET")
+                return
+
             if pages == 1:
                 page = [1]
-                conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, page, png_file)
+                conversion(Global, pdf_file, dpi, typeCVD, amountDalto, amountTransf, page, png_file)
 
             else:
                 page = None
-                conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, page, png_file)
+                conversion(Global, pdf_file, dpi, typeCVD, amountDalto, amountTransf, page, png_file)
+
+            Global.addLogMsg("PDF (" + str(list_pdf[i]) + ") CONVERTED")
+            Global.addLogMsg("----------------------------------------")
 
             Global.progress += 1
-            print str(Global.progress) + "/" + str(len(list_pdf))
+            Global.page_left -= list_pages[i]
 
+        Global.pdf = []
         Global.isFree = True
-        print "PROCESSUS DE CONVERSION TERMINE."
+        Global.abort = False
+        Global.timeout = False
+        Global.addLogMsg("PROCESSUS DE CONVERSION TERMINE.")
+        Global.addLogMsg("PRET")
 
     if test:
         pdf_file = list_pdf[0]
@@ -510,12 +544,13 @@ def main(Global, test, list_pdf, list_pages, dpi, typeCVD, amountDalto, amountTr
 
         if page <= pages:
             numpage = [page]
-            conversion(pdf_file, dpi, typeCVD, amountDalto, amountTransf, numpage, png_file)
+            conversion(Global, pdf_file, dpi, typeCVD, amountDalto, amountTransf, numpage, png_file)
 
         else:
-            print "PAGE OUT OF RANGE."
+            Global.addLogMsg("PAGE OUT OF RANGE.")
 
         Global.isFree = True
-        print "TEST DE CONVERSION TERMINE."
+        Global.addLogMsg("TEST DE CONVERSION TERMINE.")
+        Global.addLogMsg("PRET")
 
     Global.isFree = True

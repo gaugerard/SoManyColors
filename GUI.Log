@@ -1,21 +1,9 @@
-INFO 2017-12-23 19:50:12,871 - App is created.
-INFO 2017-12-23 19:50:12,872 - Menu is created.
-INFO 2017-12-23 19:50:20,160 - addpdf is called.
-INFO 2017-12-23 19:50:22,930 - a pdf has been added.
-INFO 2017-12-23 19:50:32,513 - removepdf is called.
-INFO 2017-12-23 19:50:32,513 - a pdf has been removed.
-INFO 2017-12-23 19:50:33,180 - addpdf is called.
-INFO 2017-12-23 19:50:35,220 - a pdf has been added.
-INFO 2017-12-23 19:50:35,720 - removepdf is called.
-INFO 2017-12-23 19:50:35,720 - a pdf has been removed.
-INFO 2017-12-23 19:50:38,884 - lancerconversion is called.
-INFO 2017-12-23 19:50:38,884 - the convertor is free.
-INFO 2017-12-23 19:50:40,556 - calcultemps is called.
-INFO 2017-12-23 19:50:43,322 - addpdf is called.
-INFO 2017-12-23 19:50:47,914 - a pdf has been added.
-INFO 2017-12-23 19:50:49,010 - lancerconversion is called.
-INFO 2017-12-23 19:50:49,010 - the convertor is free.
-INFO 2017-12-23 19:50:49,010 - converter is called.
-INFO 2017-12-23 19:50:49,010 - this is a full conversion.
-INFO 2017-12-23 19:50:52,075 - removepdf is called.
-INFO 2017-12-23 19:50:52,983 - no pdf in queue.
+INFO 2018-01-28 12:45:06,355 - App is created.
+INFO 2018-01-28 12:45:06,355 - Menu is created.
+INFO 2018-01-28 12:45:08,227 - addpdf is called.
+INFO 2018-01-28 12:45:09,588 - a pdf has been added.
+INFO 2018-01-28 12:45:10,342 - lancerconversion is called.
+INFO 2018-01-28 12:45:10,342 - the convertor is free.
+INFO 2018-01-28 12:45:10,342 - conversion started.
+INFO 2018-01-28 12:45:10,342 - converter is called.
+INFO 2018-01-28 12:45:10,342 - this is a full conversion.
