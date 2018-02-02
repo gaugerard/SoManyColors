@@ -1,0 +1,4 @@
+https://www.imagemagick.org/script/download.php
+
+Utilisé par l'application.
+ImageMagick à besoin de Ghostscript.

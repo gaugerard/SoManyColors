@@ -1,0 +1,3 @@
+https://www.ghostscript.com/download/gsdnld.html
+
+Il est utilisé par ImageMagick

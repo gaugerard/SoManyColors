@@ -1,0 +1,6 @@
+- Installer Ghostscript ( le .rar de Ghostscript se trouve dans build.rar )
+- Installer ImageMagick ( le .rar de ImageMagick se trouve dans build.rar )
+- Lancer le Configurateur.exe
+- Lancer l'application ( V6_4GUI.exe )
+
+/!\ pas d'espace dans le nom du PDF ou dans son chemin.
