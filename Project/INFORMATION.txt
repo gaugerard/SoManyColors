@@ -1,31 +1,31 @@
-Bienvenu sur le logiciel SoManyColors ! 
+Bienvenue sur le logiciel SoManyColors! 
 
-Si vous etes daltonien, ce logiciel de conversion de PDF est pour vous !                                                                                                                                                                           
+Si vous etes daltonien, ce logiciel de conversion de PDF est pour vous!                                                                                                                                                                           
                 
                                                                                
-A quoi sert-il ?                                                                               
-----------------                                                                               
+A quoi sert-il?                                                                               
+---------------                                                                               
                                                                                                
-Ce logiciel permet de convertir vos PDF en PDF adaptes a votre type de daltonisme. 
+Ce logiciel permet de convertir vos fichiers PDF en PDF adaptes a votre type de daltonisme. 
             
 La severite  de votre daltonisme, de la conversion  ainsi que  de la qualite de la 
 conversion sont  manipulables. 
 
 
-Comment l'installer et le configurer ?
---------------------------------------
+Comment l'installer et le configurer?
+-------------------------------------
 
-1) Installer Ghostscript et ImageMagick
+1) Installez Ghostscript et ImageMagick
 
-2) Executer Configurateur.exe
+2) Executez Configurateur.exe
 
-3) Lancer l'application V6_4GUI.exe                                                           
+3) Lancez l'application V6_4GUI.exe                                                           
                
                                                                                 
-Comment l'utiliser ?                                                                           
---------------------                                                                           
+Comment l'utiliser?                                                                           
+-------------------                                                                          
                                                                                                                                                     
-1) Grace au petit + et - en haut a gauche , ajouter et retirer des PDF a convertir. 
+1) Grace au petit + et - en haut a gauche , ajoutez et retirez des PDF a convertir. 
    Il y a aussi un bouton chrono, vous permettant d'estimer le temps de conversion
    selon la quantite de dpi selectionnee.
                                                                
@@ -36,7 +36,7 @@ Comment l'utiliser ?
    150 dpi = qualite moyenne ( recommandee pour un grand nombre de pdf ).                        
    72 dpi = qualite basse.     
                                                                  
-3) Lancer la conversion grace au bouton play en haut a gauche.   
+3) Lancez la conversion grace au bouton play en haut a gauche.   
                               
 4) Attendez la fin de la conversion.   
                                                         
