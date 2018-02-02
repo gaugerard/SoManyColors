@@ -1,0 +1,5 @@
+1) dézipper ghostscript.zip et ImageMagick-6.4.7-10-Q16-windows-dll.zip
+2) Installer ghostscript
+3) Installer ImageMagick
+4) dans ImMa_convert.txt, mettre le chemin entier vers le convert.exe de ImageMagick
+5) dans TraitDir.txt, mettre le chemin entier vers le dossier TraitementDir
