@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import V6_2ListPDFColorMatrix
 import QueuePDF
 import Tkinter as tk
@@ -166,14 +169,15 @@ class Menu(tk.Frame):  # create start page.
         self.pagescale.set(1)
         self.amountdscale.set(1)
         self.amounttscale.set(1)
-        self.daltotype.set("normal_vision")
+        self.daltotype.set("normale")
 
         self.Queue = QueuePDF.PDFQueue()
         self.Global = globalBS()
 
         # OPTION WIDGET
 
-        self.daltotypes = ["normal_vision", "protanope_vision", "deuteranope_vision", "tritanope_vision"]
+        # self.daltotypes = ["normal_vision", "protanope_vision", "deuteranope_vision", "tritanope_vision"]
+        self.daltotypes = ["normale", "protanopie", "deuteranopie", "tritanopie"]
         self.daltotypeoption = tk.OptionMenu(self, self.daltotype, *self.daltotypes)
         self.daltotypeoption.place(x=340, y=580)
 
@@ -256,22 +260,22 @@ class Menu(tk.Frame):  # create start page.
         self.labeldel = tk.Label(self, text="chrono:", font=("Verdana", 7, "bold"),
                                  fg="dark slate gray").place(x=123, y=410)
 
-        self.button3 = ttk.Button(self, text="LANCER LE TESTE", command=lambda: self.lancertest())
+        self.button3 = ttk.Button(self, text="LANCER LE TEST", command=lambda: self.lancertest())
         self.button3.place(x=210, y=430)
 
         # LABEL WIDGET
 
-        self.label0 = tk.Label(self, text="Selectionner un pdf :",font=("Verdana", 14, "bold"), fg="dark slate gray").place(x=30, y=130)
+        self.label0 = tk.Label(self, text="Sélectionner un pdf :",font=("Verdana", 14, "bold"), fg="dark slate gray").place(x=30, y=130)
 
         self.label1 = tk.Label(self, text="Configuration :",font=("Verdana", 14, "bold"), fg="dark slate gray").place(x=30, y=430)
 
-        self.label2 = tk.Label(self, text="Selectionner votre type de daltonisme : ", font=("Verdana", 10, "bold"), fg="dark slate gray").place(x=40, y=580)
+        self.label2 = tk.Label(self, text="Sélectionner votre type de daltonisme : ", font=("Verdana", 10, "bold"), fg="dark slate gray").place(x=40, y=580)
 
-        self.label3 = tk.Label(self, text="Severite du daltonisme : ", font=("Verdana", 10, "bold"), fg="dark slate gray").place(x=40, y=490)
+        self.label3 = tk.Label(self, text="Sévérité du daltonisme : ", font=("Verdana", 10, "bold"), fg="dark slate gray").place(x=40, y=490)
 
-        self.label4 = tk.Label(self, text="Severite de la conversion : ", font=("Verdana", 10, "bold"), fg="dark slate gray").place(x=40, y=540)
+        self.label4 = tk.Label(self, text="Séverité de la conversion : ", font=("Verdana", 10, "bold"), fg="dark slate gray").place(x=40, y=540)
 
-        self.label5 = tk.Label(self, text="Selectionner les dpi : ", font=("Verdana", 10, "bold"), fg="dark slate gray").place(x=40, y=630)
+        self.label5 = tk.Label(self, text="Sélectionner les dpi : ", font=("Verdana", 10, "bold"), fg="dark slate gray").place(x=40, y=630)
 
         self.label6 = tk.Label(self, text="pdf en cours de conversion :", font=("Verdana", 14, "bold"), fg="dark slate gray").place(x=30, y=690)
 
@@ -432,7 +436,7 @@ class Menu(tk.Frame):  # create start page.
             self.controller.logger.info("the convertor is free.")
 
             dpi = self.dpiscale.get()
-            typecvd = self.daltotype.get()
+            typecvd = self.daltoType()  # self.daltotype.get()
             amountdalto = self.amountdscale.get()
             amounttransf = self.amounttscale.get()
 
@@ -467,7 +471,7 @@ class Menu(tk.Frame):  # create start page.
             self.controller.logger.info("the convertor is free.")
 
             dpi = self.dpiscale.get()
-            typecvd = self.daltotype.get()
+            typecvd = self.daltoType()  # self.daltotype.get()
             amountdalto = self.amountdscale.get()
             amounttransf = self.amounttscale.get()
             page = self.pagescale.get()
@@ -605,6 +609,27 @@ class Menu(tk.Frame):  # create start page.
         """
 
         self.controller.show_frame(Information)
+
+    def daltoType(self):
+        """
+        Translate the color blind type into the correct form.
+
+        ex:
+            type selected    =    protanope
+                                     |
+                                     |
+                                     |
+                                     V
+            what program wants = protanope_vision
+
+        :return: vision_type : the type of colorblind that the program can read. ( "normal_vision", "protanope_vision",
+                "deuteranope_vision", "tritanope_vision" )
+        """
+
+        dico_vision_type = {"normale": "normal_vision", "protanopie": "protanope_vision", "deuteranopie": "deuteranope_vision", "tritanopie": "tritanope_vision"}
+        vision_type = dico_vision_type[self.daltotype.get()]
+        return vision_type
+
 
 
 # HOW TO ADD ANOTHER PAGE TO THE APPLICATION.

@@ -1,4 +1,15 @@
-INFO 2018-02-02 12:34:41,315 - App is created.
-INFO 2018-02-02 12:34:41,315 - Menu is created.
-INFO 2018-02-02 12:34:42,336 - addpdf is called.
-INFO 2018-02-02 12:34:47,437 - restartconversion is called.
+INFO 2018-04-05 18:41:50,878 - App is created.
+INFO 2018-04-05 18:41:50,878 - Menu is created.
+INFO 2018-04-05 18:41:52,881 - addpdf is called.
+INFO 2018-04-05 18:41:58,951 - a pdf has been added.
+INFO 2018-04-05 18:42:01,473 - lancerconversion is called.
+INFO 2018-04-05 18:42:01,473 - the convertor is free.
+INFO 2018-04-05 18:42:01,473 - conversion started.
+INFO 2018-04-05 18:42:01,473 - converter is called.
+INFO 2018-04-05 18:42:01,473 - this is a full conversion.
+INFO 2018-04-05 18:42:02,846 - showprogress is called.
+INFO 2018-04-05 18:42:02,848 - calcultemps is called.
+INFO 2018-04-05 18:42:06,993 - showprogress is called.
+INFO 2018-04-05 18:42:06,993 - calcultemps is called.
+INFO 2018-04-05 18:42:09,334 - showprogress is called.
+INFO 2018-04-05 18:42:09,334 - calcultemps is called.
